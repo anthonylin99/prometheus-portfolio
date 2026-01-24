@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Sector } from 'recharts';
 import { CategoryData } from '@/types/portfolio';
 import { formatCurrency, formatPercentage } from '@/lib/utils';
+import { useVisibility } from '@/lib/visibility-context';
 
 interface AllocationDonutProps {
   data: CategoryData[];
@@ -12,6 +13,7 @@ interface AllocationDonutProps {
 
 export function AllocationDonut({ data, totalValue }: AllocationDonutProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const { isVisible } = useVisibility();
 
   if (!data.length) {
     return (
@@ -97,7 +99,7 @@ export function AllocationDonut({ data, totalValue }: AllocationDonutProps) {
           <>
             <span className="text-sm text-slate-400 font-medium">Total Value</span>
             <span className="text-2xl font-bold text-white tabular-nums">
-              {formatCurrency(totalValue)}
+              {isVisible ? formatCurrency(totalValue) : '$••••••'}
             </span>
           </>
         )}

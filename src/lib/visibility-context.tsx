@@ -19,8 +19,9 @@ interface VisibilityContextType {
 const VisibilityContext = createContext<VisibilityContextType | undefined>(undefined);
 
 export function VisibilityProvider({ children }: { children: ReactNode }) {
-  // Default to hidden (false) for privacy
-  const [isVisible, setIsVisible] = useState(false);
+  // Always default to HIDDEN for privacy. New visitors see masked values until they enter PIN.
+  // Do not persist isVisible to storage - it must reset to false on each new session/tab.
+  const [isVisible, setIsVisible] = useState<boolean>(() => false);
   const [isPINModalOpen, setIsPINModalOpen] = useState(false);
 
   const openPINModal = useCallback(() => {
