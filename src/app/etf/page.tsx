@@ -5,7 +5,7 @@ import { BenchmarkChart } from '@/components/charts/BenchmarkChart';
 import { RiskMetricsCard } from '@/components/cards/RiskMetricsCard';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { usePortfolio, useHistoricalData, useETF, useRiskMetrics } from '@/lib/hooks';
-import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
+import { formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { categoryColors, Category } from '@/types/portfolio';
 import { 
   Globe,
@@ -18,10 +18,12 @@ import {
   TrendingUp,
   TrendingDown,
   ArrowUpRight,
-  Shield
+  Shield,
+  Download
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useVisibility } from '@/lib/visibility-context';
 
 const categoryIcons: Record<Category, React.ReactNode> = {
   'Space & Satellite': <Satellite className="w-5 h-5" />,
@@ -38,10 +40,17 @@ export default function ETFPage() {
   const { data: historicalData, loading: chartLoading, range, setRange } = useHistoricalData('ALL');
   const { etf } = useETF();
   const { metrics: riskMetrics, loading: riskLoading } = useRiskMetrics(range === 'ALL' ? '1Y' : range);
+  const { isVisible } = useVisibility();
   // ETF Overview page shows simulated ETF values publicly (starting at $100)
   // Only personal portfolio dollar values need privacy protection
 
   const isPositive = etf ? etf.totalReturn >= 0 : true;
+
+  const handleExportCSV = () => {
+    // If PIN authenticated, include full values; otherwise public only
+    const url = `/api/export/csv${isVisible ? '?includeValues=true' : ''}`;
+    window.open(url, '_blank');
+  };
 
   return (
     <div className="p-6 lg:p-8 min-h-screen">
@@ -97,18 +106,8 @@ export default function ETFPage() {
             )}
           </div>
 
-          {/* Key Metrics - All ETF metrics are public */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-              <p className="text-sm text-slate-400 mb-1">Net Assets</p>
-              <p className="text-2xl font-bold text-white tabular-nums">
-                {formatCurrency(summary.totalValue)}
-              </p>
-            </div>
-            <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-              <p className="text-sm text-slate-400 mb-1">Holdings</p>
-              <p className="text-2xl font-bold text-white">{holdings.length}</p>
-            </div>
+          {/* Key Metrics - Public ETF metrics only */}
+          <div className="grid grid-cols-3 gap-4">
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
               <p className="text-sm text-slate-400 mb-1">Day Change</p>
               <p className={cn(
@@ -117,6 +116,13 @@ export default function ETFPage() {
               )}>
                 {formatPercentagePrecise(summary.dayChangePercent)}
               </p>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+              <p className="text-sm text-slate-400 mb-1">Month Change</p>
+              <p className="text-2xl font-bold text-slate-500 tabular-nums">
+                N/A
+              </p>
+              <p className="text-xs text-slate-600 mt-1">Insufficient data</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
               <div className="flex items-center gap-2 text-sm text-slate-400 mb-1">
@@ -182,9 +188,6 @@ export default function ETFPage() {
                     <p className="font-bold text-white tabular-nums">
                       {formatPercentage(category.percentage)}
                     </p>
-                    <p className="text-sm text-slate-400 tabular-nums">
-                      {formatCurrency(category.value)}
-                    </p>
                   </div>
                 </div>
                 <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
@@ -222,9 +225,7 @@ export default function ETFPage() {
                 <th className="text-left p-3 text-sm font-semibold text-slate-400">#</th>
                 <th className="text-left p-3 text-sm font-semibold text-slate-400">Holding</th>
                 <th className="text-left p-3 text-sm font-semibold text-slate-400 hidden md:table-cell">Category</th>
-                <th className="text-right p-3 text-sm font-semibold text-slate-400">Price</th>
-                <th className="text-right p-3 text-sm font-semibold text-slate-400 hidden sm:table-cell">Shares</th>
-                <th className="text-right p-3 text-sm font-semibold text-slate-400">Value</th>
+                <th className="text-right p-3 text-sm font-semibold text-slate-400">Day Change</th>
                 <th className="text-right p-3 text-sm font-semibold text-slate-400">Weight</th>
               </tr>
             </thead>
@@ -258,22 +259,11 @@ export default function ETFPage() {
                       </span>
                     </td>
                     <td className="p-3 text-right">
-                      <p className="font-medium text-white tabular-nums">
-                        ${holding.currentPrice.toFixed(2)}
-                      </p>
                       <p className={cn(
-                        "text-xs tabular-nums",
+                        "font-medium tabular-nums",
                         dayPositive ? "text-emerald-400" : "text-red-400"
                       )}>
                         {formatPercentagePrecise(holding.dayChangePercent)}
-                      </p>
-                    </td>
-                    <td className="p-3 text-right hidden sm:table-cell">
-                      <span className="text-slate-300 tabular-nums">{holding.shares.toLocaleString()}</span>
-                    </td>
-                    <td className="p-3 text-right">
-                      <p className="font-bold text-white tabular-nums">
-                        {formatCurrency(holding.value)}
                       </p>
                     </td>
                     <td className="p-3 text-right">
@@ -289,15 +279,26 @@ export default function ETFPage() {
         </div>
       </div>
 
-      {/* Disclaimer */}
-      <div className="mt-8 p-4 rounded-xl bg-slate-900/30 border border-slate-800">
-        <p className="text-xs text-slate-500 leading-relaxed">
-          <strong className="text-slate-400">Disclaimer:</strong> $ALIN (Prometheus ETF) is a 
-          hypothetical personal portfolio for educational and tracking purposes only. 
-          This is not a registered investment fund. Historical performance is calculated 
-          based on actual stock prices but assumes constant share holdings since inception.
-          Past performance does not guarantee future results.
-        </p>
+      {/* Export & Disclaimer */}
+      <div className="mt-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <button
+          onClick={handleExportCSV}
+          className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-white transition-colors text-sm"
+        >
+          <Download className="w-4 h-4" />
+          Export CSV
+          {!isVisible && <span className="text-xs text-slate-500">(Public)</span>}
+        </button>
+        
+        <div className="p-4 rounded-xl bg-slate-900/30 border border-slate-800 flex-1">
+          <p className="text-xs text-slate-500 leading-relaxed">
+            <strong className="text-slate-400">Disclaimer:</strong> $ALIN (Prometheus ETF) is a 
+            hypothetical personal portfolio for educational and tracking purposes only. 
+            This is not a registered investment fund. Historical performance is calculated 
+            based on actual stock prices but assumes constant share holdings since inception.
+            Past performance does not guarantee future results.
+          </p>
+        </div>
       </div>
     </div>
   );

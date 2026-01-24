@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ETFData } from '@/types/portfolio';
 import { cn, formatCurrencyPrecise, formatPercentagePrecise } from '@/lib/utils';
 import { useVisibility } from '@/lib/visibility-context';
-import { Compass, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 
 interface ETFCardProps {
   etf: ETFData;
@@ -28,8 +29,14 @@ export function ETFCard({ etf, className }: ETFCardProps) {
         <div className="flex items-center gap-4">
           {/* Logo */}
           <div className="relative">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
-              <Compass className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 rounded-xl overflow-hidden shadow-lg shadow-purple-500/25">
+              <Image 
+                src="/prometheus.png" 
+                alt="Prometheus ETF" 
+                width={56} 
+                height={56}
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
 
