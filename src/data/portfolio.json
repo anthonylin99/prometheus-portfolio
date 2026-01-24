@@ -1,0 +1,82 @@
+{
+  "holdings": [
+    {
+      "ticker": "ASTS",
+      "name": "AST SpaceMobile",
+      "value": 28000,
+      "category": "Space & Satellite",
+      "description": "Space-based cellular broadband network"
+    },
+    {
+      "ticker": "IREN",
+      "name": "Iris Energy",
+      "value": 23400,
+      "category": "Crypto Infrastructure",
+      "description": "Bitcoin mining with renewable energy"
+    },
+    {
+      "ticker": "HOOD",
+      "name": "Robinhood",
+      "value": 22900,
+      "category": "Fintech",
+      "description": "Commission-free trading platform"
+    },
+    {
+      "ticker": "GLXY",
+      "name": "Galaxy Digital",
+      "value": 14400,
+      "category": "Crypto Infrastructure",
+      "description": "Crypto financial services & asset management"
+    },
+    {
+      "ticker": "MTPLF",
+      "name": "Metaplanet",
+      "value": 11200,
+      "category": "Digital Asset Treasury",
+      "description": "Japan's Bitcoin treasury company"
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon",
+      "value": 10600,
+      "category": "Big Tech",
+      "description": "E-commerce, cloud (AWS), AI infrastructure"
+    },
+    {
+      "ticker": "FIGR",
+      "name": "Figure Technologies",
+      "value": 8100,
+      "category": "Fintech",
+      "description": "Blockchain-based lending & financial services"
+    },
+    {
+      "ticker": "META",
+      "name": "Meta Platforms",
+      "value": 6800,
+      "category": "AI Infrastructure",
+      "description": "Social media, VR/AR, AI research"
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "value": 5300,
+      "category": "AI Infrastructure",
+      "description": "GPU computing & AI chips"
+    },
+    {
+      "ticker": "COIN",
+      "name": "Coinbase",
+      "value": 3700,
+      "category": "Fintech",
+      "description": "Crypto exchange & custody"
+    },
+    {
+      "ticker": "KRKNF",
+      "name": "Kraken",
+      "value": 2900,
+      "category": "Crypto Infrastructure",
+      "description": "Global crypto exchange"
+    }
+  ],
+  "lastUpdated": "2026-01-23T12:00:00Z"
+}
