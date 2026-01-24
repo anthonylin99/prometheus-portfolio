@@ -2,19 +2,42 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
+// PIN for unlocking visibility - stored here for simplicity
+const UNLOCK_PIN = '2119';
+
 interface VisibilityContextType {
   isVisible: boolean;
-  toggleVisibility: () => void;
+  isPINModalOpen: boolean;
+  openPINModal: () => void;
+  closePINModal: () => void;
+  unlockWithPIN: () => void;
+  hideValues: () => void;
   maskValue: (value: string | number) => string;
+  correctPIN: string;
 }
 
 const VisibilityContext = createContext<VisibilityContextType | undefined>(undefined);
 
 export function VisibilityProvider({ children }: { children: ReactNode }) {
-  const [isVisible, setIsVisible] = useState(true);
+  // Default to hidden (false) for privacy
+  const [isVisible, setIsVisible] = useState(false);
+  const [isPINModalOpen, setIsPINModalOpen] = useState(false);
 
-  const toggleVisibility = useCallback(() => {
-    setIsVisible(prev => !prev);
+  const openPINModal = useCallback(() => {
+    setIsPINModalOpen(true);
+  }, []);
+
+  const closePINModal = useCallback(() => {
+    setIsPINModalOpen(false);
+  }, []);
+
+  const unlockWithPIN = useCallback(() => {
+    setIsVisible(true);
+    setIsPINModalOpen(false);
+  }, []);
+
+  const hideValues = useCallback(() => {
+    setIsVisible(false);
   }, []);
 
   const maskValue = useCallback((value: string | number): string => {
@@ -28,7 +51,16 @@ export function VisibilityProvider({ children }: { children: ReactNode }) {
   }, [isVisible]);
 
   return (
-    <VisibilityContext.Provider value={{ isVisible, toggleVisibility, maskValue }}>
+    <VisibilityContext.Provider value={{ 
+      isVisible, 
+      isPINModalOpen,
+      openPINModal,
+      closePINModal,
+      unlockWithPIN,
+      hideValues,
+      maskValue,
+      correctPIN: UNLOCK_PIN
+    }}>
       {children}
     </VisibilityContext.Provider>
   );

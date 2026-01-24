@@ -13,10 +13,11 @@ import {
   X,
   Settings,
   Eye,
-  EyeOff
+  Lock
 } from 'lucide-react';
 import { cn, formatCurrency, formatPercentagePrecise } from '@/lib/utils';
 import { useVisibility } from '@/lib/visibility-context';
+import { PINModal } from '@/components/ui/PINModal';
 import { useState, useEffect } from 'react';
 
 const navigation = [
@@ -40,7 +41,25 @@ export function Sidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState<SidebarData | null>(null);
-  const { isVisible, toggleVisibility } = useVisibility();
+  const { 
+    isVisible, 
+    isPINModalOpen, 
+    openPINModal, 
+    closePINModal, 
+    unlockWithPIN, 
+    hideValues,
+    correctPIN 
+  } = useVisibility();
+
+  const handleVisibilityToggle = () => {
+    if (isVisible) {
+      // If visible, just hide (no PIN needed)
+      hideValues();
+    } else {
+      // If hidden, require PIN to show
+      openPINModal();
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -153,12 +172,12 @@ export function Sidebar() {
         <div className="absolute bottom-8 left-0 right-0 p-4 border-t border-[rgba(139,92,246,0.1)]">
           {/* Visibility Toggle */}
           <button
-            onClick={toggleVisibility}
+            onClick={handleVisibilityToggle}
             className="w-full flex items-center justify-center gap-2 px-3 py-2 mb-3 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 text-slate-400 hover:text-white transition-colors text-sm"
-            title={isVisible ? 'Hide amounts' : 'Show amounts'}
+            title={isVisible ? 'Hide amounts' : 'Enter PIN to show amounts'}
           >
-            {isVisible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            <span>{isVisible ? 'Hide Values' : 'Show Values'}</span>
+            {isVisible ? <Eye className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+            <span>{isVisible ? 'Hide Values' : 'Enter PIN'}</span>
           </button>
 
           {/* $ALIN Price */}
@@ -212,6 +231,14 @@ export function Sidebar() {
           </div>
         </div>
       </aside>
+
+      {/* PIN Modal */}
+      <PINModal
+        isOpen={isPINModalOpen}
+        onClose={closePINModal}
+        onSuccess={unlockWithPIN}
+        correctPIN={correctPIN}
+      />
     </>
   );
 }

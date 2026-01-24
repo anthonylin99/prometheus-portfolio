@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { HoldingWithPrice, categoryColors } from '@/types/portfolio';
 import { formatCurrency, formatPercentagePrecise, cn } from '@/lib/utils';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
+import { useVisibility } from '@/lib/visibility-context';
 
 interface HoldingsBarProps {
   holdings: HoldingWithPrice[];
 }
 
 export function HoldingsBar({ holdings }: HoldingsBarProps) {
+  const { isVisible } = useVisibility();
   const sortedHoldings = [...holdings].sort((a, b) => b.value - a.value);
   const maxValue = sortedHoldings[0]?.value || 1;
   
@@ -46,7 +48,7 @@ export function HoldingsBar({ holdings }: HoldingsBarProps) {
                     </span>
                   </div>
                   <span className="font-bold text-white tabular-nums ml-2">
-                    {formatCurrency(holding.value)}
+                    {isVisible ? formatCurrency(holding.value) : '$••••••'}
                   </span>
                 </div>
               </div>
