@@ -52,7 +52,10 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey || apiKey.trim() === '') {
       return NextResponse.json(
-        { error: 'ANTHROPIC_API_KEY not configured. Add it to .env.local.' },
+        {
+          error:
+            'ANTHROPIC_API_KEY is not set. Local: add to .env.local. Vercel: Project Settings → Environment Variables, add ANTHROPIC_API_KEY, then redeploy.',
+        },
         { status: 500 }
       );
     }

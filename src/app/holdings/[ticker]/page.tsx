@@ -7,7 +7,8 @@ import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { SocialFeed } from '@/components/social/SocialFeed';
 import { HoldingsPriceChart } from '@/components/charts/HoldingsPriceChart';
 import { ThesisSection } from '@/components/holdings/ThesisSection';
-import { AIAnalysisSection } from '@/components/holdings/AIAnalysisSection';
+import { StockAnalysisPanel } from '@/components/holdings/StockAnalysisPanel';
+import { useStockAnalysis } from '@/hooks/useStockAnalysis';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { useVisibility } from '@/lib/visibility-context';
 import { categoryColors } from '@/types/portfolio';
@@ -31,6 +32,7 @@ export default function AssetDetailPage() {
 
   const holding = holdings.find(h => h.ticker.toUpperCase() === ticker.toUpperCase());
   const { isVisible } = useVisibility();
+  const { analysisProps, historicalMetrics, loading: analysisLoading, error: analysisError, refetch } = useStockAnalysis(ticker, holding ?? null);
 
   if (loading && !holding) {
     return (
@@ -190,9 +192,19 @@ export default function AssetDetailPage() {
         <ThesisSection ticker={holding.ticker} />
       </div>
 
-      {/* AI Analysis */}
+      {/* Stock Analysis (AI) */}
+      {analysisError && (
+        <div className="mb-4 p-4 rounded-xl bg-red-900/30 border border-red-800/50 flex items-center gap-2">
+          <p className="text-red-300 text-sm">{analysisError}</p>
+        </div>
+      )}
       <div className="mb-8">
-        <AIAnalysisSection ticker={holding.ticker} companyName={holding.name} />
+        <StockAnalysisPanel
+          {...analysisProps}
+          loading={analysisLoading}
+          onRefresh={refetch}
+          historicalMetrics={historicalMetrics}
+        />
       </div>
 
       {/* News & Community Feed */}

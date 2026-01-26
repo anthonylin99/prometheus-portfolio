@@ -1,4 +1,5 @@
 import YahooFinance from 'yahoo-finance2';
+import type { YahooQuote } from '@/lib/adapters/metricsAdapter';
 
 // Create yahoo-finance instance (required for v3+)
 const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
@@ -46,6 +47,29 @@ export async function getQuote(ticker: string): Promise<QuoteData | null> {
     };
   } catch (error) {
     console.error(`Error fetching quote for ${ticker}:`, error);
+    return null;
+  }
+}
+
+/** Quote plus volume for catalyst/analytics. Volume and averageVolume can be undefined if not available. */
+export async function getQuoteWithVolume(ticker: string): Promise<{
+  price: number;
+  changePercent: number;
+  volume?: number;
+  averageVolume?: number;
+} | null> {
+  try {
+    const yahooTicker = getYahooTicker(ticker);
+    const quote = await yahooFinance.quote(yahooTicker);
+    if (!quote || quote.regularMarketPrice == null) return null;
+    const q = quote as { regularMarketVolume?: number; averageDailyVolume3Month?: number; averageDailyVolume10Day?: number };
+    return {
+      price: quote.regularMarketPrice,
+      changePercent: quote.regularMarketChangePercent ?? 0,
+      volume: q.regularMarketVolume,
+      averageVolume: q.averageDailyVolume3Month ?? q.averageDailyVolume10Day,
+    };
+  } catch {
     return null;
   }
 }
@@ -105,6 +129,46 @@ export async function getHistoricalData(
   } catch (error) {
     console.error(`Error fetching historical data for ${ticker}:`, error);
     return [];
+  }
+}
+
+/**
+ * Fetches quote + quoteSummary (defaultKeyStatistics, calendarEvents) and merges
+ * into a YahooQuote for buildMetricsFromQuote. Use when you need marketCap, 52W,
+ * volume, beta, shortPercentOfFloat, and next earnings.
+ */
+export async function getQuoteForMetrics(ticker: string): Promise<YahooQuote | null> {
+  try {
+    const yahooTicker = getYahooTicker(ticker);
+    const [quote, summary] = await Promise.all([
+      yahooFinance.quote(yahooTicker),
+      (yahooFinance as { quoteSummary(s: string, o: { modules: string[] }): Promise<Record<string, unknown>> })
+        .quoteSummary(yahooTicker, { modules: ['defaultKeyStatistics', 'calendarEvents'] })
+        .catch(() => null),
+    ]);
+
+    if (!quote) return null;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const dk = (summary as any)?.defaultKeyStatistics;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cal = (summary as any)?.calendarEvents;
+    const earningsDate = cal?.earnings?.earningsDate?.[0];
+
+    const out: YahooQuote = {
+      marketCap: quote.marketCap,
+      fiftyTwoWeekLow: quote.fiftyTwoWeekLow,
+      fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh,
+      regularMarketPrice: quote.regularMarketPrice,
+      averageDailyVolume3Month: quote.averageDailyVolume3Month,
+      beta: quote.beta ?? dk?.beta,
+      shortPercentOfFloat: dk?.shortPercentOfFloat ?? quote.shortPercentOfFloat,
+      earningsTimestamp: quote.earningsTimestamp ?? (earningsDate ? new Date(earningsDate) : undefined),
+    };
+    return out;
+  } catch (error) {
+    console.error(`Error fetching quote for metrics (${ticker}):`, error);
+    return null;
   }
 }
 
