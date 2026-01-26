@@ -7,8 +7,8 @@ import {
   PortfolioSummary, 
   ETFData,
   HistoricalDataPoint,
-  categoryColors,
-  TimeRange 
+  getCategoryColor,
+  TimeRange
 } from '@/types/portfolio';
 
 const holdings = portfolioData.holdings as Holding[];
@@ -75,7 +75,7 @@ export async function getPortfolioWithPrices(): Promise<{
       name: name as CategoryData['name'],
       value: data.value,
       percentage: totalValue > 0 ? (data.value / totalValue) * 100 : 0,
-      color: categoryColors[name as keyof typeof categoryColors],
+      color: getCategoryColor(name),
       holdings: data.holdings.sort((a, b) => b.value - a.value),
     }))
     .sort((a, b) => b.value - a.value);

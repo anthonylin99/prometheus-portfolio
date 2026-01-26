@@ -30,7 +30,7 @@ export function HoldingsBar({ holdings }: HoldingsBarProps) {
             style={{ animationDelay: `${index * 50}ms` }}
           >
             <div className="flex items-center gap-3 mb-1.5">
-              <CompanyLogo ticker={holding.ticker} size="sm" />
+              <CompanyLogo ticker={holding.ticker} domain={holding.logoDomain} size="sm" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">

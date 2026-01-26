@@ -20,3 +20,18 @@ export const redis = createRedisClient();
 
 // Check if Redis is available
 export const isRedisAvailable = (): boolean => redis !== null;
+
+// Get Redis client or throw (used by auth and multi-user features that require Redis)
+export function getRequiredRedis(): Redis {
+  if (!redis) {
+    throw new Error(
+      'Redis is required for authentication. Configure UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in .env.local'
+    );
+  }
+  return redis;
+}
+
+// Get Redis client or null (for optional features like default circle lookup)
+export function getOptionalRedis(): Redis | null {
+  return redis;
+}

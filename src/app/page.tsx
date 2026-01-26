@@ -1,18 +1,22 @@
 'use client';
 
+import { useState } from 'react';
+import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { AllocationDonut } from '@/components/charts/AllocationDonut';
 import { HoldingsBar } from '@/components/charts/HoldingsBar';
 import { TopHoldingCard } from '@/components/cards/TopHoldingCard';
 import { StatCard } from '@/components/cards/StatCard';
 import { ETFCard } from '@/components/cards/ETFCard';
-import { usePortfolio, useETF } from '@/lib/hooks';
+import { usePortfolio, useETF, useAuth } from '@/lib/hooks';
 import { formatCurrency, getRelativeTime } from '@/lib/utils';
-import { Wallet, PieChart, TrendingUp, Layers, RefreshCw } from 'lucide-react';
+import { Wallet, PieChart, TrendingUp, Layers, RefreshCw, Rocket, X } from 'lucide-react';
 
 export default function Dashboard() {
   const { holdings, summary, categories, loading, error, refresh, cached } = usePortfolio();
   const { etf } = useETF();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   if (loading && holdings.length === 0) {
     return (
@@ -45,7 +49,34 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 lg:p-8 min-h-screen">
-      <Header 
+      {/* CTA Banner for unauthenticated visitors */}
+      {!authLoading && !isAuthenticated && !bannerDismissed && (
+        <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-violet-600/20 to-purple-600/20 border border-violet-500/30 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Rocket className="w-5 h-5 text-violet-400 flex-shrink-0" />
+            <p className="text-sm text-slate-300">
+              <span className="text-white font-medium">Create your own ETF</span>{' '}
+              and compete with friends on portfolio performance
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href="/login"
+              className="px-4 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              Get Started
+            </Link>
+            <button
+              onClick={() => setBannerDismissed(true)}
+              className="p-1 text-slate-500 hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      <Header
         title="Prometheus ETF"
         subtitle="Personal Investment Portfolio"
         totalValue={summary.totalValue}

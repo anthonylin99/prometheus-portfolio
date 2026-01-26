@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { LayoutWrapper } from "@/components/layout/LayoutWrapper";
 import { VisibilityProvider } from "@/lib/visibility-context";
+import { AuthProvider } from "@/lib/auth-context";
+import { PortfolioProvider } from "@/lib/portfolio-context";
 
 export const metadata: Metadata = {
   title: "Prometheus ETF | Personal Portfolio Tracker",
@@ -34,11 +36,15 @@ export default function RootLayout({
           <div className="bg-orb bg-orb-3" />
         </div>
         
-        <VisibilityProvider>
-          <LayoutWrapper>
-            {children}
-          </LayoutWrapper>
-        </VisibilityProvider>
+        <AuthProvider>
+          <VisibilityProvider>
+            <PortfolioProvider>
+              <LayoutWrapper>
+                {children}
+              </LayoutWrapper>
+            </PortfolioProvider>
+          </VisibilityProvider>
+        </AuthProvider>
       </body>
     </html>
   );

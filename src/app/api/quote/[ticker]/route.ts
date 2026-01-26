@@ -15,6 +15,12 @@ export interface QuoteResponse {
   beta?: number;
   shortPercentOfFloat?: number;
   nextEarnings?: string;
+  // Extended fields from summaryProfile
+  name?: string;
+  shortName?: string;
+  sector?: string;
+  industry?: string;
+  website?: string;
 }
 
 function formatEarningsDate(d: Date): string {
@@ -32,7 +38,7 @@ export async function GET(
     const [quoteRes, summaryRes] = await Promise.all([
       yahooFinance.quote(yahooTicker),
       yahooFinance.quoteSummary(yahooTicker, {
-        modules: ['summaryDetail', 'defaultKeyStatistics', 'calendarEvents'],
+        modules: ['summaryDetail', 'defaultKeyStatistics', 'calendarEvents', 'summaryProfile'],
       }),
     ]);
 
@@ -46,6 +52,11 @@ export async function GET(
     const def = (summaryRes as any)?.defaultKeyStatistics;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const cal = (summaryRes as any)?.calendarEvents;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const prof = (summaryRes as any)?.summaryProfile;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const qFull = quoteRes as any;
 
     let nextEarnings: string | undefined;
     if (cal?.earnings?.earningsDate?.length) {
@@ -70,6 +81,12 @@ export async function GET(
       shortPercentOfFloat:
         typeof def?.shortPercentOfFloat === 'number' ? def.shortPercentOfFloat * 100 : undefined,
       nextEarnings,
+      // Extended fields
+      name: qFull?.longName || qFull?.shortName || prof?.longBusinessSummary ? (qFull?.longName || qFull?.shortName) : undefined,
+      shortName: qFull?.shortName || undefined,
+      sector: prof?.sector || undefined,
+      industry: prof?.industry || undefined,
+      website: prof?.website || undefined,
     };
 
     return NextResponse.json(out, {

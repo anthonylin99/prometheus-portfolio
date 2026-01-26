@@ -23,9 +23,10 @@ type CandleData = { date: string; open: number; high: number; low: number; close
 interface HoldingsPriceChartProps {
   ticker: string;
   companyName: string;
+  logoDomain?: string;
 }
 
-export function HoldingsPriceChart({ ticker, companyName }: HoldingsPriceChartProps) {
+export function HoldingsPriceChart({ ticker, companyName, logoDomain }: HoldingsPriceChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRefs = useRef<Map<string, ISeriesApi<'Line'> | ISeriesApi<'Candlestick'>>>(new Map());
@@ -255,7 +256,7 @@ export function HoldingsPriceChart({ ticker, companyName }: HoldingsPriceChartPr
     <div className="rounded-2xl overflow-hidden border border-slate-700/50" style={{ background: '#131722' }}>
       <div className="p-4 pb-2 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <CompanyLogo ticker={ticker} size="lg" className="flex-shrink-0" />
+          <CompanyLogo ticker={ticker} domain={logoDomain} size="lg" className="flex-shrink-0" />
           <div>
             <h3 className="text-lg font-bold text-white">{ticker}</h3>
             <p className="text-sm text-slate-400">{companyName}</p>

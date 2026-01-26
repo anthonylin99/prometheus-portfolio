@@ -10,17 +10,21 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
+    "@auth/upstash-redis-adapter": "^2.11.1",
     "@upstash/redis": "^1.36.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "lightweight-charts": "^5.1.0",
     "lucide-react": "^0.563.0",
     "next": "16.1.4",
+    "next-auth": "^5.0.0-beta.30",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
     "recharts": "^3.7.0",
+    "resend": "^6.8.0",
     "tailwind-merge": "^3.4.0",
+    "uuid": "^13.0.0",
     "yahoo-finance2": "^3.12.0"
   },
   "devDependencies": {

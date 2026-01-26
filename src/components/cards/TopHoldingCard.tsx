@@ -26,7 +26,7 @@ export function TopHoldingCard({ holding, rank, portfolioPercentage }: TopHoldin
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <CompanyLogo ticker={holding.ticker} size="lg" />
+            <CompanyLogo ticker={holding.ticker} domain={holding.logoDomain} size="lg" />
             <div 
               className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-slate-900 border-2 flex items-center justify-center text-xs font-bold text-white"
               style={{ borderColor: color }}

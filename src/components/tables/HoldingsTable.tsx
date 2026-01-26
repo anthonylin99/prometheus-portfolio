@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { HoldingWithPrice, categoryColors } from '@/types/portfolio';
+import { HoldingWithPrice, getCategoryColor } from '@/types/portfolio';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { useVisibility } from '@/lib/visibility-context';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
@@ -142,25 +142,26 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
           />
         </div>
 
-        {/* Category Filter - consistent button grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        {/* Category Filter - uniform button grid */}
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
           {categories.map(cat => {
             const isActive = selectedCategory === cat;
+            const label = cat === 'all' ? 'All' : cat;
             return (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
+                title={label}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium",
-                  "min-w-[140px] h-10",
-                  "flex items-center justify-center",
+                  "w-full h-10 min-h-10 rounded-lg text-sm font-medium",
+                  "flex items-center justify-center min-w-0 overflow-hidden px-3",
                   "transition-colors duration-200",
                   isActive
                     ? "bg-violet-600 text-white"
                     : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                 )}
               >
-                {cat === 'all' ? 'All' : cat}
+                <span className="truncate block w-full text-center">{label}</span>
               </button>
             );
           })}
@@ -250,17 +251,17 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
             </thead>
             <tbody>
               {filteredAndSortedHoldings.map((holding) => {
-                const color = categoryColors[holding.category];
+                const color = getCategoryColor(holding.category);
                 const dayPositive = holding.dayChangePercent >= 0;
-                
+
                 return (
-                  <tr 
+                  <tr
                     key={holding.ticker}
                     className="border-b border-slate-800/50 hover:bg-white/5 transition-colors group"
                   >
                     <td className="p-4">
                       <Link href={`/holdings/${holding.ticker}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <CompanyLogo ticker={holding.ticker} size="md" />
+                        <CompanyLogo ticker={holding.ticker} domain={holding.logoDomain} size="md" />
                         <div>
                           <p className="font-semibold text-white">{holding.ticker}</p>
                           <p className="text-sm text-slate-400">{holding.name}</p>

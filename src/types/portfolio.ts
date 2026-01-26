@@ -1,11 +1,74 @@
-export type Category =
-  | 'Space & Satellite'
-  | 'Crypto Infrastructure'
-  | 'Fintech'
-  | 'AI Infrastructure'
-  | 'Digital Asset Treasury'
-  | 'Big Tech'
-  | 'Defense Tech';
+// Category is now a dynamic string — any sector/theme name is valid
+export type Category = string;
+
+export const DEFAULT_CATEGORIES: Category[] = [
+  'Space & Satellite',
+  'Crypto Infrastructure',
+  'Fintech',
+  'AI Infrastructure',
+  'Digital Asset Treasury',
+  'Big Tech',
+  'Defense Tech',
+];
+
+// Fixed colors for the original 7 categories
+const BASE_CATEGORY_COLORS: Record<string, string> = {
+  'Space & Satellite': '#f472b6',
+  'Crypto Infrastructure': '#22d3ee',
+  'Fintech': '#a78bfa',
+  'AI Infrastructure': '#34d399',
+  'Digital Asset Treasury': '#fbbf24',
+  'Big Tech': '#60a5fa',
+  'Defense Tech': '#f97316',
+};
+
+// Additional palette for dynamically-created categories
+const EXTRA_COLORS = [
+  '#e879f9', // fuchsia-400
+  '#fb923c', // orange-400
+  '#4ade80', // green-400
+  '#f87171', // red-400
+  '#38bdf8', // sky-400
+  '#facc15', // yellow-400
+  '#a3e635', // lime-400
+  '#2dd4bf', // teal-400
+  '#c084fc', // purple-400
+  '#818cf8', // indigo-400
+];
+
+// Deterministic color from category name hash
+function hashColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0;
+  }
+  return EXTRA_COLORS[Math.abs(hash) % EXTRA_COLORS.length];
+}
+
+/**
+ * Get the color for a category. Known categories get their fixed color;
+ * new categories get a deterministic color from the extra palette.
+ */
+export function getCategoryColor(name: string): string {
+  return BASE_CATEGORY_COLORS[name] || hashColor(name);
+}
+
+// Legacy export — kept for backward compat in existing components
+export const categoryColors: Record<string, string> = new Proxy(BASE_CATEGORY_COLORS, {
+  get(target, prop: string) {
+    return target[prop] || hashColor(prop);
+  },
+});
+
+export const categoryGradients: Record<string, string> = {
+  'Space & Satellite': 'from-pink-500 to-rose-400',
+  'Crypto Infrastructure': 'from-cyan-400 to-teal-500',
+  'Fintech': 'from-violet-400 to-purple-500',
+  'AI Infrastructure': 'from-emerald-400 to-green-500',
+  'Digital Asset Treasury': 'from-amber-400 to-yellow-500',
+  'Big Tech': 'from-blue-400 to-indigo-500',
+  'Defense Tech': 'from-orange-500 to-amber-500',
+};
 
 export interface Holding {
   ticker: string;
@@ -14,6 +77,7 @@ export interface Holding {
   category: Category;
   description: string;
   exchange?: string;
+  logoDomain?: string;
   // Calculated fields (from API)
   currentPrice?: number;
   previousClose?: number;
@@ -79,26 +143,6 @@ export interface PriceCache {
   }>;
   lastFetch: string;
 }
-
-export const categoryColors: Record<Category, string> = {
-  'Space & Satellite': '#f472b6',
-  'Crypto Infrastructure': '#22d3ee',
-  'Fintech': '#a78bfa',
-  'AI Infrastructure': '#34d399',
-  'Digital Asset Treasury': '#fbbf24',
-  'Big Tech': '#60a5fa',
-  'Defense Tech': '#f97316',
-};
-
-export const categoryGradients: Record<Category, string> = {
-  'Space & Satellite': 'from-pink-500 to-rose-400',
-  'Crypto Infrastructure': 'from-cyan-400 to-teal-500',
-  'Fintech': 'from-violet-400 to-purple-500',
-  'AI Infrastructure': 'from-emerald-400 to-green-500',
-  'Digital Asset Treasury': 'from-amber-400 to-yellow-500',
-  'Big Tech': 'from-blue-400 to-indigo-500',
-  'Defense Tech': 'from-orange-500 to-amber-500',
-};
 
 export type TimeRange = '1D' | '5D' | '1M' | '3M' | '6M' | 'YTD' | '1Y' | 'ALL';
 

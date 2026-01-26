@@ -8,6 +8,7 @@ import { SocialFeed } from '@/components/social/SocialFeed';
 import { HoldingsPriceChart } from '@/components/charts/HoldingsPriceChart';
 import { ThesisSection } from '@/components/holdings/ThesisSection';
 import { StockAnalysisPanel } from '@/components/holdings/StockAnalysisPanel';
+import { CollectionBadges } from '@/components/holdings/CollectionBadges';
 import { useStockAnalysis } from '@/hooks/useStockAnalysis';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { useVisibility } from '@/lib/visibility-context';
@@ -83,7 +84,7 @@ export default function AssetDetailPage() {
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
             {/* Left: Logo & Info */}
             <div className="flex items-start gap-5">
-              <CompanyLogo ticker={holding.ticker} size="lg" className="w-20 h-20 text-2xl" />
+              <CompanyLogo ticker={holding.ticker} domain={holding.logoDomain} size="lg" className="w-20 h-20 text-2xl" />
               <div>
                 <div className="flex items-center gap-3 mb-1">
                   <h1 className="text-4xl font-bold text-white">{holding.ticker}</h1>
@@ -182,9 +183,12 @@ export default function AssetDetailPage() {
         </div>
       </div>
 
+      {/* Collection Badges */}
+      <CollectionBadges ticker={holding.ticker} />
+
       {/* Price Chart */}
       <div className="mb-8">
-        <HoldingsPriceChart ticker={holding.ticker} companyName={holding.name} />
+        <HoldingsPriceChart ticker={holding.ticker} companyName={holding.name} logoDomain={holding.logoDomain} />
       </div>
 
       {/* Anthony's Thesis */}
