@@ -197,7 +197,13 @@ export function useStockAnalysis(
               forceRegenerate,
             }),
             cache: 'no-store',
-          }).then((r) => (r.ok ? (r.json() as Promise<StructuredThesisResponse>) : null)),
+          }).then(async (r) => {
+            if (r.ok) return r.json() as Promise<StructuredThesisResponse>;
+            const errData = await r.json().catch(() => null);
+            const msg = errData?.error || `Structured thesis failed (${r.status})`;
+            setError(msg);
+            return null;
+          }),
           fetch('/api/ai/generate-catalyst', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

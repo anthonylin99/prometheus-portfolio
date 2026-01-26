@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
   }
 
   const anthropic = new Anthropic({ apiKey });
-  const model = process.env.ANTHROPIC_STRUCTURED_MODEL_ID || process.env.ANTHROPIC_MODEL_ID || 'claude-3-5-sonnet-20241022';
+  const model = process.env.ANTHROPIC_STRUCTURED_MODEL_ID || process.env.ANTHROPIC_MODEL_ID || 'claude-haiku-4-5-20251001';
 
   const price = currentPrice != null ? `$${currentPrice}` : 'N/A';
   const cap = marketCap ?? 'N/A';

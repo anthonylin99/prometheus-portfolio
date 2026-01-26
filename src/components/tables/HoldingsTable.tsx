@@ -269,7 +269,7 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
                     </td>
                     <td className="p-4 hidden md:table-cell">
                       <span 
-                        className="inline-flex items-center justify-center px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-center leading-tight max-w-[90px]"
+                        className="inline-flex items-center justify-center px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-center leading-tight w-[100px]"
                         style={{ backgroundColor: `${color}20`, color }}
                       >
                         {holding.category}
