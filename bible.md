@@ -1,5 +1,7 @@
 # Prometheus ETF Project Bible
 
+**Applies to every contributor and every AI (Cursor, Claude Code, etc.) working in this repo.**
+
 ## Philosophy
 
 > This codebase will outlive you. Every shortcut becomes someone else's burden. Fight entropy and make things better than where you left it.

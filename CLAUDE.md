@@ -1,10 +1,12 @@
-# Prometheus ETF / PathFinder ETF — Claude Project Context
+# Prometheus ETF / PathFinder ETF — Project Context (Cursor & Claude Code)
+
+**This file is the canonical project context for both Cursor and Claude Code.** Anyone (human or AI) editing this repo should read this file and **[bible.md](./bible.md)** first.
 
 Personal portfolio tracker for **Prometheus ETF ($ALIN)**. Next.js 16 (App Router), TypeScript, Tailwind CSS, Upstash Redis, Yahoo Finance, lightweight-charts, Anthropic Claude.
 
 **Live:** https://prometheus-personal-portfolio.vercel.app/
 
-**Philosophy & standards:** All code, refactors, and design decisions must align with **[bible.md](./bible.md)**. Read it first. Architecture over expediency, radical reliability, documentation as code, and the "Considerate Coworker" protocol apply to every change.
+**Philosophy & standards:** All code, refactors, and design decisions must align with **[bible.md](./bible.md)**. This applies in **Cursor**, **Claude Code**, and any other editor. Read bible.md first. Architecture over expediency, radical reliability, documentation as code, and the "Considerate Coworker" protocol apply to every change.
 
 ---
 

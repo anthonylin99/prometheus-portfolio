@@ -2,6 +2,8 @@
 
 A professional, dark-themed personal portfolio tracking website showcasing your investment thesis. Built with Next.js 14, Tailwind CSS, and Recharts.
 
+**Philosophy & standards (all contributors & AI):** Everyone editing this repo—including AI in **Cursor** and **Claude Code**—must follow **[bible.md](./bible.md)**. It defines long-term stewardship, architecture-over-expediency, radical reliability, and the "Considerate Coworker" protocol. Project context for both editors: **[CLAUDE.md](./CLAUDE.md)**.
+
 ![PathFinder ETF](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square&logo=tailwindcss)
