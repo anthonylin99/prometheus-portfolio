@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Check, Flame } from 'lucide-react';
+import { ChevronDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePortfolioViewing } from '@/lib/portfolio-context';
 import { useSession } from 'next-auth/react';
@@ -24,7 +24,6 @@ export function PortfolioSwitcher() {
   const [userProfile, setUserProfile] = useState<{ etfTicker?: string; etfName?: string } | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const { viewing, switchToUser, switchToSelf } = usePortfolioViewing();
-  const [viewingPublic, setViewingPublic] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -74,8 +73,8 @@ export function PortfolioSwitcher() {
   const myName = userProfile?.etfName || currentMember?.etfTicker || 'My Portfolio';
   
   // Determine what's currently active
-  const activeTicker = viewingPublic ? 'ALIN' : (viewing ? viewing.etfTicker : myTicker);
-  const activeLabel = viewingPublic ? 'Prometheus ETF' : (viewing ? viewing.name : 'My Portfolio');
+  const activeTicker = viewing ? viewing.etfTicker : myTicker;
+  const activeLabel = viewing ? viewing.name : 'My Portfolio';
 
   return (
     <div className="relative" ref={ref}>
@@ -84,23 +83,19 @@ export function PortfolioSwitcher() {
         className={cn(
           "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
           "bg-slate-800/60 border border-slate-700/40 hover:border-violet-500/40",
-          viewingPublic ? "text-orange-300" : viewing ? "text-violet-300" : "text-slate-300"
+          viewing ? "text-violet-300" : "text-slate-300"
         )}
       >
-        {viewingPublic ? (
-          <Flame className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
-        ) : (
-          <span
-            className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-            style={{
-              backgroundColor: viewing
-                ? viewing.avatarColor
-                : currentMember?.avatarColor || '#8b5cf6',
-            }}
-          />
-        )}
+        <span
+          className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+          style={{
+            backgroundColor: viewing
+              ? viewing.avatarColor
+              : currentMember?.avatarColor || '#8b5cf6',
+          }}
+        />
         <span className="font-mono">${activeTicker}</span>
-        {(viewing || viewingPublic) && (
+        {viewing && (
           <span className="text-slate-500 text-xs">({activeLabel})</span>
         )}
         <ChevronDown className={cn("w-3.5 h-3.5 text-slate-500 transition-transform", open && "rotate-180")} />
@@ -117,12 +112,11 @@ export function PortfolioSwitcher() {
           <button
             onClick={() => {
               switchToSelf();
-              setViewingPublic(false);
               setOpen(false);
             }}
             className={cn(
               "w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-700/40 transition-colors text-left",
-              !viewing && !viewingPublic && "bg-violet-500/10"
+              !viewing && "bg-violet-500/10"
             )}
           >
             <span
@@ -138,39 +132,8 @@ export function PortfolioSwitcher() {
               </div>
               <p className="text-slate-400 text-xs truncate">{myName}</p>
             </div>
-            {!viewing && !viewingPublic && (
+            {!viewing && (
               <Check className="w-4 h-4 text-violet-400 flex-shrink-0" />
-            )}
-          </button>
-
-          {/* Public ETF */}
-          <div className="px-3 py-2 border-b border-t border-slate-700/40">
-            <p className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">
-              Public ETF
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setViewingPublic(true);
-              switchToSelf(); // Clear any circle member viewing
-              setOpen(false);
-            }}
-            className={cn(
-              "w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-700/40 transition-colors text-left",
-              viewingPublic && "bg-orange-500/10"
-            )}
-          >
-            <Flame className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-white text-sm font-mono font-semibold">
-                  $ALIN
-                </span>
-              </div>
-              <p className="text-slate-400 text-xs truncate">Prometheus ETF</p>
-            </div>
-            {viewingPublic && (
-              <Check className="w-4 h-4 text-orange-400 flex-shrink-0" />
             )}
           </button>
 
@@ -197,7 +160,6 @@ export function PortfolioSwitcher() {
                           name: member.name,
                           avatarColor: member.avatarColor,
                         });
-                        setViewingPublic(false);
                         setOpen(false);
                       }}
                       className={cn(
