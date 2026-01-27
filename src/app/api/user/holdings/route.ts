@@ -47,6 +47,12 @@ export async function POST(request: Request) {
     }
 
     // Regular user adds to their own portfolio
+    // Check if already exists
+    const { getUserPortfolio } = await import('@/lib/user-portfolio-service');
+    const portfolio = await getUserPortfolio(session.user.id);
+    const existingHolding = portfolio.holdings.find(h => h.ticker.toUpperCase() === ticker.toUpperCase());
+    const wasDuplicate = !!existingHolding;
+
     const holding: UserHolding = {
       ticker: ticker.toUpperCase(),
       name: name || ticker.toUpperCase(),
@@ -72,7 +78,14 @@ export async function POST(request: Request) {
       });
     }
 
-    return NextResponse.json({ success: true, holding });
+    return NextResponse.json({ 
+      success: true, 
+      holding,
+      wasDuplicate,
+      message: wasDuplicate 
+        ? `Added ${shares} more shares to existing ${ticker} position`
+        : `Successfully added ${ticker} to portfolio`
+    });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error('Failed to add holding:', err);

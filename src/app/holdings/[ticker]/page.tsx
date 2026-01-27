@@ -73,6 +73,11 @@ export default function AssetDetailPage() {
   const holding = holdings.find(h => h.ticker.toUpperCase() === ticker.toUpperCase());
   const alreadyInPortfolio = !!holding;
   
+  // Get portfolio name for display
+  const portfolioName = isAuthenticated 
+    ? (profile?.etfTicker ? `$${profile.etfTicker}` : 'My Portfolio')
+    : 'Prometheus ETF';
+  
   // Fetch quote data if not in portfolio (static once loaded)
   useEffect(() => {
     if (!holding && !quoteData && !loadingQuote) {
@@ -137,17 +142,27 @@ export default function AssetDetailPage() {
       }
 
       // Success!
+      const result = await response.json();
       setAddSuccess(true);
       setShowAddForm(false);
       
-      // Refresh portfolio data
+      // Update success message if duplicate
+      if (result.wasDuplicate) {
+        // Show a different message for duplicates
+      }
+      
+      // Force refresh portfolio data immediately
       if (refresh) {
         await refresh();
       }
       
+      // Also trigger a page refresh to ensure data is updated
+      router.refresh();
+      
       // Redirect to holdings page after short delay
       setTimeout(() => {
-        router.push('/holdings');
+        // Force reload to ensure fresh data
+        window.location.href = '/holdings';
       }, 1500);
     } catch (error) {
       console.error('Failed to add holding:', error);
@@ -233,24 +248,48 @@ export default function AssetDetailPage() {
                 <div className="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center">
                   <Plus className="w-6 h-6 text-violet-400" />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-white">Add to Portfolio</h2>
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold text-white mb-1">Add to Portfolio</h2>
                   {isAuthenticated ? (
-                    <p className="text-slate-400">
-                      Add to: <span className="text-violet-400 font-medium">${profile?.etfTicker || 'My Portfolio'}</span>
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-slate-400">Adding to:</p>
+                      <span className="text-violet-400 font-bold text-lg">{portfolioName}</span>
+                      {profile?.etfName && (
+                        <span className="text-slate-500 text-sm">({profile.etfName})</span>
+                      )}
+                    </div>
                   ) : (
                     <p className="text-amber-400">Sign in to add stocks to your portfolio</p>
                   )}
                 </div>
               </div>
+              
+              {/* Already in portfolio warning */}
+              {alreadyInPortfolio && holding && (
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-amber-500/20 border border-amber-500/30 mb-4">
+                  <AlertCircle className="w-5 h-5 text-amber-400" />
+                  <div className="flex-1">
+                    <p className="text-amber-400 font-medium">{ticker} is already in your portfolio</p>
+                    <p className="text-amber-400/70 text-sm">
+                      Current: {holding.shares.toFixed(4)} shares @ ${holding.currentPrice?.toFixed(2) || 'N/A'}
+                    </p>
+                    <p className="text-amber-400/70 text-sm mt-1">
+                      Click "Add to Portfolio" below to add more shares
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Success message */}
               {addSuccess && (
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/30 mb-4">
                   <CheckCircle className="w-5 h-5 text-emerald-400" />
-                  <div>
-                    <p className="text-emerald-400 font-medium">Successfully added {ticker} to your portfolio!</p>
+                  <div className="flex-1">
+                    <p className="text-emerald-400 font-medium">
+                      {alreadyInPortfolio 
+                        ? `Added more shares of ${ticker} to ${portfolioName}!`
+                        : `Successfully added ${ticker} to ${portfolioName}!`}
+                    </p>
                     <p className="text-emerald-400/70 text-sm">Redirecting to holdings...</p>
                   </div>
                 </div>
@@ -272,19 +311,32 @@ export default function AssetDetailPage() {
                   Sign In to Add
                 </Link>
               ) : !showAddForm && !addSuccess ? (
-                <button
-                  onClick={() => setShowAddForm(true)}
-                  className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/50"
-                >
-                  Add to Portfolio
-                </button>
+                <div className="space-y-4">
+                  <div className="p-4 rounded-lg bg-violet-500/10 border border-violet-500/20">
+                    <p className="text-sm text-slate-300 mb-2">
+                      <span className="font-semibold">Portfolio:</span> <span className="text-violet-400 font-bold">{portfolioName}</span>
+                    </p>
+                    {alreadyInPortfolio && (
+                      <p className="text-xs text-amber-400">
+                        This stock is already in your portfolio. Click below to add more shares.
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setShowAddForm(true)}
+                    className="w-full px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/50"
+                  >
+                    {alreadyInPortfolio ? 'Add More Shares' : 'Add to Portfolio'}
+                  </button>
+                </div>
               ) : !addSuccess ? (
                 <div className="space-y-4">
-                  {/* Portfolio indicator */}
-                  <div className="p-3 rounded-lg bg-violet-500/10 border border-violet-500/20">
-                    <p className="text-sm text-slate-400">
-                      Adding to: <span className="text-white font-medium">${profile?.etfTicker || 'My Portfolio'}</span>
-                      {profile?.etfName && <span className="text-slate-500"> ({profile.etfName})</span>}
+                  {/* Portfolio indicator - more prominent */}
+                  <div className="p-4 rounded-lg bg-violet-500/10 border-2 border-violet-500/30">
+                    <p className="text-xs text-slate-400 mb-1 uppercase tracking-wider">Adding to Portfolio</p>
+                    <p className="text-lg font-bold text-white">
+                      {portfolioName}
+                      {profile?.etfName && <span className="text-slate-400 text-base font-normal ml-2">({profile.etfName})</span>}
                     </p>
                   </div>
 
