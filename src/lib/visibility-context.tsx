@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 // PIN for unlocking visibility - stored here for simplicity
 const UNLOCK_PIN = '2119';
@@ -19,9 +20,19 @@ interface VisibilityContextType {
 const VisibilityContext = createContext<VisibilityContextType | undefined>(undefined);
 
 export function VisibilityProvider({ children }: { children: ReactNode }) {
-  // Default to hidden — dollar amounts are masked until unlocked with PIN.
-  const [isVisible, setIsVisible] = useState<boolean>(() => false);
+  const { status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+  
+  // Default to visible for authenticated users, hidden for guests
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isPINModalOpen, setIsPINModalOpen] = useState(false);
+  
+  // Auto-unlock for authenticated users
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsVisible(true);
+    }
+  }, [isAuthenticated]);
 
   const openPINModal = useCallback(() => {
     setIsPINModalOpen(true);
