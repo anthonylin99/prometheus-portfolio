@@ -32,6 +32,7 @@ export async function GET(
   const { holdings, summary, categories } = await getUserPortfolioWithPrices(targetUserId);
 
   // Sanitize: strip dollar amounts, keep only percentages and weights
+  // Note: removed currentPrice as it leaks portfolio value via weight × price
   const sanitizedHoldings = holdings.map((h) => ({
     ticker: h.ticker,
     name: h.name,
@@ -39,7 +40,6 @@ export async function GET(
     logoDomain: h.logoDomain,
     weight: h.weight,
     dayChangePercent: h.dayChangePercent,
-    currentPrice: h.currentPrice,
   }));
 
   const sanitizedSummary = {

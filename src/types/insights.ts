@@ -1,6 +1,51 @@
-import { SignalStrength, TechnicalSignal } from '@/lib/technical-analysis';
+// Types for technical analysis - defined here to avoid client/server import issues
+// These must match the types in @/lib/technical-analysis
 
-export type { SignalStrength } from '@/lib/technical-analysis';
+export type SignalStrength = 'strong_buy' | 'buy' | 'hold' | 'sell' | 'strong_sell';
+
+export interface RSIData {
+  value: number;
+  signal: 'overbought' | 'neutral' | 'oversold';
+  description: string;
+}
+
+export interface MACDData {
+  macd: number;
+  signal: number;
+  histogram: number;
+  trend: 'bullish' | 'bearish' | 'neutral';
+  description: string;
+}
+
+export interface SupportResistanceData {
+  support: number;
+  resistance: number;
+  currentDistance: {
+    toSupport: number;
+    toResistance: number;
+  };
+  nearLevel: 'support' | 'resistance' | 'middle';
+}
+
+export interface FiftyTwoWeekData {
+  high: number;
+  low: number;
+  current: number;
+  position: number;
+  signal: 'near_high' | 'near_low' | 'middle';
+  description: string;
+}
+
+export interface TechnicalSignal {
+  ticker: string;
+  rsi: RSIData;
+  macd: MACDData;
+  fiftyTwoWeek: FiftyTwoWeekData;
+  supportResistance: SupportResistanceData;
+  overallSignal: SignalStrength;
+  signalScore: number;
+  calculatedAt: string;
+}
 
 export type AlertPriority = 'high' | 'medium' | 'low';
 export type AlertType =

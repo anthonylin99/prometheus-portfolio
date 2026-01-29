@@ -53,6 +53,8 @@ export default function HoldingsPage() {
   };
 
   const handleAddTicker = async (ticker: string) => {
+    // Clear search results immediately to close dropdown
+    setSearchResults([]);
     setAdding(ticker);
     try {
       const res = await fetch('/api/user/holdings', {
@@ -63,7 +65,6 @@ export default function HoldingsPage() {
       if (res.ok) {
         setShowAddModal(false);
         setSearchQuery('');
-        setSearchResults([]);
         refresh();
       }
     } catch (err) {
@@ -197,7 +198,7 @@ export default function HoldingsPage() {
       {/* Individual Holdings Table */}
       <div className="mb-8">
         <h3 className="text-xl font-bold text-white mb-4">All Holdings</h3>
-        <HoldingsTable holdings={holdings} totalValue={summary.totalValue} />
+        <HoldingsTable holdings={holdings} totalValue={summary.totalValue} onRefresh={refresh} />
       </div>
 
       {/* Category Overview with Pie Chart */}

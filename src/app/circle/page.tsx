@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCircle, useAuth } from '@/lib/hooks';
 import { Leaderboard } from '@/components/circle/Leaderboard';
 import { ActivityFeed } from '@/components/circle/ActivityFeed';
@@ -9,7 +10,8 @@ import { Users, Plus, ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function CirclePage() {
-  const { circle, loading } = useCircle();
+  const router = useRouter();
+  const { circle, loading, refresh: refreshCircle } = useCircle();
   const { user } = useAuth();
   const [mode, setMode] = useState<'join' | 'create' | null>(null);
   const [inviteCode, setInviteCode] = useState('');
@@ -32,8 +34,10 @@ export default function CirclePage() {
         setError(data.error || 'Failed to join circle');
         return;
       }
-      // Reload the page to show the circle
-      window.location.reload();
+      // Wait for Redis propagation, then refresh without full reload
+      await new Promise((r) => setTimeout(r, 300));
+      refreshCircle();
+      router.refresh();
     } catch {
       setError('Something went wrong');
     } finally {
@@ -56,7 +60,10 @@ export default function CirclePage() {
         setError(data.error || 'Failed to create circle');
         return;
       }
-      window.location.reload();
+      // Wait for Redis propagation, then refresh without full reload
+      await new Promise((r) => setTimeout(r, 300));
+      refreshCircle();
+      router.refresh();
     } catch {
       setError('Something went wrong');
     } finally {

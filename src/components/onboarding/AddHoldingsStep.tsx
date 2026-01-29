@@ -68,9 +68,9 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
     ? allCategories.filter(c => c.toLowerCase().includes(categoryInput.toLowerCase()))
     : allCategories;
 
-  // Debounced search
+  // Debounced search - don't show dropdown when quote selected or fetching
   useEffect(() => {
-    if (!searchQuery || searchQuery.length < 1) {
+    if (!searchQuery || searchQuery.length < 1 || fetchingQuote || selectedQuote) {
       setSearchResults([]);
       setShowDropdown(false);
       return;
@@ -81,8 +81,11 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
       try {
         const res = await fetch(`/api/search/tickers?q=${encodeURIComponent(searchQuery)}`);
         const data = await res.json();
-        setSearchResults(data.results || []);
-        setShowDropdown(true);
+        // Only show results if we're not in the process of selecting
+        if (!fetchingQuote && !selectedQuote) {
+          setSearchResults(data.results || []);
+          setShowDropdown(true);
+        }
       } catch {
         setSearchResults([]);
       } finally {
@@ -91,7 +94,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, fetchingQuote, selectedQuote]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -120,6 +123,8 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
   }, []);
 
   const selectResult = useCallback(async (result: SearchResult) => {
+    // Clear results BEFORE closing dropdown to prevent re-render flicker
+    setSearchResults([]);
     setShowDropdown(false);
     setSearchQuery(result.symbol);
     setFetchingQuote(true);
