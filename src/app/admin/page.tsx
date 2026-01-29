@@ -778,11 +778,71 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* Data Management */}
+      <div className="glass-card rounded-2xl overflow-hidden mb-8">
+        <div className="p-4 border-b border-slate-800">
+          <h2 className="text-lg font-bold text-white">Data Management</h2>
+          <p className="text-sm text-slate-400">Clear cached data and manage internal storage</p>
+        </div>
+
+        <div className="p-6 space-y-4">
+          <div className="flex items-center justify-between p-4 bg-slate-800/40 rounded-xl">
+            <div>
+              <p className="font-medium text-white">Clear User Portfolio</p>
+              <p className="text-sm text-slate-400">Remove all holdings from your portfolio (fixes duplicates)</p>
+            </div>
+            <button
+              onClick={async () => {
+                if (!confirm('Are you sure you want to clear your entire portfolio? This cannot be undone.')) return;
+                setSaving(true);
+                try {
+                  const res = await fetch('/api/user/portfolio', { method: 'DELETE' });
+                  if (res.ok) {
+                    setSuccess('Portfolio cleared successfully');
+                    fetchData();
+                  } else {
+                    throw new Error('Failed to clear portfolio');
+                  }
+                } catch {
+                  setError('Failed to clear portfolio');
+                } finally {
+                  setSaving(false);
+                  setTimeout(() => setSuccess(null), 3000);
+                }
+              }}
+              disabled={saving}
+              className="px-4 py-2 bg-red-600/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-600/30 transition-colors disabled:opacity-50"
+            >
+              <Trash2 className="w-4 h-4 inline mr-2" />
+              Clear Portfolio
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-slate-800/40 rounded-xl">
+            <div>
+              <p className="font-medium text-white">Clear Local Storage</p>
+              <p className="text-sm text-slate-400">Reset watchlist, theme settings, and cached data</p>
+            </div>
+            <button
+              onClick={() => {
+                if (!confirm('Clear all local browser data? This includes watchlist and preferences.')) return;
+                localStorage.clear();
+                setSuccess('Local storage cleared - refresh the page');
+                setTimeout(() => setSuccess(null), 3000);
+              }}
+              className="px-4 py-2 bg-amber-600/20 text-amber-400 border border-amber-500/30 rounded-lg hover:bg-amber-600/30 transition-colors"
+            >
+              Clear Local Data
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Redis Note */}
       <div className="mt-8 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
         <p className="text-sm text-amber-400">
-          <strong>Note:</strong> Holdings management requires Upstash Redis to be configured. 
-          Without Redis, holdings are read-only from the portfolio.json file. 
+          <strong>Note:</strong> Holdings management requires Upstash Redis to be configured.
+          Without Redis, holdings are read-only from the portfolio.json file.
           Add your Upstash credentials to .env.local to enable full CRUD functionality.
         </p>
       </div>

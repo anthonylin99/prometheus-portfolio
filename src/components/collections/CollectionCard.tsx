@@ -54,16 +54,6 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
           className
         )}
       >
-        {/* Add to portfolio button */}
-        {isAuthenticated && (
-          <button
-            onClick={handleAddClick}
-            className="absolute top-4 right-4 p-2.5 rounded-xl bg-[#9b8ac4]/15 text-[#9b8ac4] border border-[#9b8ac4]/25 hover:bg-[#7c6baa] hover:text-white hover:border-transparent transition-all duration-200 z-10"
-            title="Add to portfolio"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        )}
       {/* Header */}
       <div className="flex items-start justify-between mb-2">
         <div className="flex-1 min-w-0">
@@ -116,13 +106,25 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
         )}
       </div>
 
-      {/* Tags */}
-      <div className="flex flex-wrap gap-1.5">
-        {collection.tags.slice(0, 3).map((tag) => (
-          <span key={tag} className="text-[11px] text-slate-500">
-            #{tag}
-          </span>
-        ))}
+      {/* Tags + Add Button Row */}
+      <div className="flex items-center justify-between">
+        <div className="flex flex-wrap gap-1.5">
+          {collection.tags.slice(0, 3).map((tag) => (
+            <span key={tag} className="text-[11px] text-slate-500">
+              #{tag}
+            </span>
+          ))}
+        </div>
+        {/* Add to portfolio button */}
+        {isAuthenticated && (
+          <button
+            onClick={handleAddClick}
+            className="p-2 rounded-lg bg-[#9b8ac4]/10 text-[#9b8ac4] border border-[#9b8ac4]/20 hover:bg-[#7c6baa] hover:text-white hover:border-transparent transition-all duration-200"
+            title="Add to portfolio"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </Link>
 

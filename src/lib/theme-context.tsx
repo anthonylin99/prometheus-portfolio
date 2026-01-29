@@ -63,10 +63,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.classList.remove('light');
     root.classList.add('dark');
 
-    // Yankee Candle Lavender theme colors
-    root.style.setProperty('--bg-primary', '#08070f');
-    root.style.setProperty('--bg-secondary', '#0d0b18');
-    root.style.setProperty('--bg-tertiary', '#141022');
+    // Yankee Candle Lavender theme colors - deeper purple tones
+    root.style.setProperty('--bg-primary', '#0d0a14');
+    root.style.setProperty('--bg-secondary', '#110e1a');
+    root.style.setProperty('--bg-tertiary', '#16122a');
     root.style.setProperty('--bg-card', 'rgba(18, 14, 30, 0.7)');
     root.style.setProperty('--bg-card-hover', 'rgba(25, 20, 42, 0.85)');
     root.style.setProperty('--text-primary', '#f5f3fa');

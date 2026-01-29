@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { getUserPortfolio } from '@/lib/user-portfolio-service';
 import { getHistoricalData, getQuoteForMetrics } from '@/lib/yahoo-finance';
-import { generateTechnicalSignal, TechnicalSignal } from '@/lib/technical-analysis';
-import {
+import { generateTechnicalSignal } from '@/lib/technical-analysis';
+import type {
+  TechnicalSignal,
   Alert,
   Opportunity,
   PortfolioHealth,

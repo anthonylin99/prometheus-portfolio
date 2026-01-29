@@ -67,12 +67,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Background Effects */
+/* Background Effects - Luma-inspired Lavender */
 .bg-gradient-radial {
-  background: radial-gradient(ellipse at 50% 0%, rgba(155, 138, 196, 0.08) 0%, transparent 50%),
-              radial-gradient(ellipse at 0% 50%, rgba(124, 107, 170, 0.05) 0%, transparent 40%),
-              radial-gradient(ellipse at 100% 50%, rgba(196, 168, 184, 0.04) 0%, transparent 40%),
-              var(--bg-primary);
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(155, 138, 196, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 0% 50%, rgba(124, 107, 170, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 100% 50%, rgba(196, 168, 184, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 100% at 50% 100%, rgba(124, 107, 170, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #0d0a14 0%, #0f0c18 50%, #12101c 100%);
 }
 
 /* Glass Card Effect */
