@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import type { TechnicalSignal, SignalStrength } from '@/lib/technical-analysis';
+import type { TechnicalSignal, SignalStrength } from '@/types/insights';
 import { Activity, ChevronDown, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import Link from 'next/link';
