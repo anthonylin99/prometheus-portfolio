@@ -170,31 +170,148 @@ export default function CollectionDetailPage() {
         </div>
       )}
 
-      {/* Stocks List */}
-      <div className="glass-card p-6 rounded-2xl">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-white">Holdings</h2>
-          <button
-            onClick={() => fetchPrices(true)}
-            disabled={loading}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors text-sm disabled:opacity-50"
-          >
-            <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
-            Refresh Prices
-          </button>
+      {/* Two-column layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Holdings list - 7 cols */}
+        <div className="lg:col-span-7">
+          <div className="glass-card p-6 rounded-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-white">Holdings</h2>
+              <button
+                onClick={() => fetchPrices(true)}
+                disabled={loading}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors text-sm disabled:opacity-50"
+              >
+                <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
+                Refresh Prices
+              </button>
+            </div>
+
+            <div className="divide-y divide-slate-700/50">
+              {displayStocks.map((stock, i) => (
+                <StockRow
+                  key={stock.ticker}
+                  stock={stock as CollectionStockWithPrice}
+                  rank={i + 1}
+                  holdingsPercent={displayStocks.length > 0 ? 100 / displayStocks.length : 0}
+                  isWatchlisted={watchlist.has(stock.ticker)}
+                  onToggleWatchlist={toggleWatchlist}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="divide-y divide-slate-700/50">
-          {displayStocks.map((stock, i) => (
-            <StockRow
-              key={stock.ticker}
-              stock={stock as CollectionStockWithPrice}
-              rank={i + 1}
-              holdingsPercent={displayStocks.length > 0 ? 100 / displayStocks.length : 0}
-              isWatchlisted={watchlist.has(stock.ticker)}
-              onToggleWatchlist={toggleWatchlist}
-            />
-          ))}
+        {/* Right panel - 5 cols */}
+        <div className="lg:col-span-5 space-y-4">
+          {/* Performance Summary Card */}
+          {collection && (
+            <div className="glass-card p-5 rounded-2xl">
+              <h3 className="text-sm font-medium text-slate-400 mb-3">Collection Performance</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Top Gainer</p>
+                  {(() => {
+                    const stocks = collection.stocks.filter(s => s.dayChangePercent !== undefined);
+                    const topGainer = stocks.length > 0
+                      ? stocks.reduce((best, s) => (s.dayChangePercent ?? 0) > (best.dayChangePercent ?? 0) ? s : best)
+                      : null;
+                    if (!topGainer) return <p className="text-slate-500">—</p>;
+                    return (
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-white">{topGainer.ticker}</span>
+                        <span className="text-emerald-400 text-sm">+{(topGainer.dayChangePercent ?? 0).toFixed(1)}%</span>
+                      </div>
+                    );
+                  })()}
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Top Loser</p>
+                  {(() => {
+                    const stocks = collection.stocks.filter(s => s.dayChangePercent !== undefined);
+                    const topLoser = stocks.length > 0
+                      ? stocks.reduce((worst, s) => (s.dayChangePercent ?? 0) < (worst.dayChangePercent ?? 0) ? s : worst)
+                      : null;
+                    if (!topLoser) return <p className="text-slate-500">—</p>;
+                    return (
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-white">{topLoser.ticker}</span>
+                        <span className="text-red-400 text-sm">{(topLoser.dayChangePercent ?? 0).toFixed(1)}%</span>
+                      </div>
+                    );
+                  })()}
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Average Change</p>
+                  {(() => {
+                    const stocks = collection.stocks.filter(s => s.dayChangePercent !== undefined);
+                    if (stocks.length === 0) return <p className="text-slate-500">—</p>;
+                    const avg = stocks.reduce((sum, s) => sum + (s.dayChangePercent ?? 0), 0) / stocks.length;
+                    return (
+                      <p className={cn(
+                        "font-semibold",
+                        avg >= 0 ? "text-emerald-400" : "text-red-400"
+                      )}>
+                        {avg >= 0 ? '+' : ''}{avg.toFixed(2)}%
+                      </p>
+                    );
+                  })()}
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Positive / Negative</p>
+                  {(() => {
+                    const stocks = collection.stocks.filter(s => s.dayChangePercent !== undefined);
+                    const positive = stocks.filter(s => (s.dayChangePercent ?? 0) >= 0).length;
+                    const negative = stocks.length - positive;
+                    return (
+                      <p className="font-semibold text-white">
+                        <span className="text-emerald-400">{positive}</span>
+                        {' / '}
+                        <span className="text-red-400">{negative}</span>
+                      </p>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Category Info Card */}
+          <div className="glass-card p-5 rounded-2xl">
+            <h3 className="text-sm font-medium text-slate-400 mb-3">About {category.name}</h3>
+            <p className="text-sm text-slate-300 leading-relaxed">{category.description}</p>
+            <div className="mt-4 pt-3 border-t border-slate-700/50">
+              <p className="text-xs text-slate-500">Methodology</p>
+              <p className="text-sm text-white mt-1 capitalize">{staticCollection.methodology.replace(/-/g, ' ')}</p>
+            </div>
+          </div>
+
+          {/* Quick Stats Card */}
+          <div className="glass-card p-5 rounded-2xl">
+            <h3 className="text-sm font-medium text-slate-400 mb-3">Quick Stats</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-slate-500">Total Stocks</span>
+                <span className="text-sm font-medium text-white">{staticCollection.stocks.length}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-slate-500">Risk Level</span>
+                <span className={cn(
+                  "text-sm font-medium",
+                  staticCollection.riskLevel === 'low' && 'text-emerald-400',
+                  staticCollection.riskLevel === 'moderate' && 'text-blue-400',
+                  staticCollection.riskLevel === 'high' && 'text-amber-400',
+                  staticCollection.riskLevel === 'very-high' && 'text-red-400'
+                )}>
+                  {staticCollection.riskLevel === 'very-high' ? 'Very High' : staticCollection.riskLevel.charAt(0).toUpperCase() + staticCollection.riskLevel.slice(1)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-slate-500">Category</span>
+                <span className="text-sm font-medium" style={{ color: category.color }}>{category.name}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

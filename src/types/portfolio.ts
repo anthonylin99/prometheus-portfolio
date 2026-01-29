@@ -1,7 +1,23 @@
 // Category is now a dynamic string — any sector/theme name is valid
 export type Category = string;
 
-export const DEFAULT_CATEGORIES: Category[] = [
+// All 11 GICS sectors (Bloomberg standard)
+export const GICS_SECTORS: Category[] = [
+  'Energy',
+  'Materials',
+  'Industrials',
+  'Consumer Discretionary',
+  'Consumer Staples',
+  'Health Care',
+  'Financials',
+  'Information Technology',
+  'Communication Services',
+  'Utilities',
+  'Real Estate',
+];
+
+// Thematic overlays (original categories)
+export const THEMATIC_CATEGORIES: Category[] = [
   'Space & Satellite',
   'Crypto Infrastructure',
   'Fintech',
@@ -11,8 +27,14 @@ export const DEFAULT_CATEGORIES: Category[] = [
   'Defense Tech',
 ];
 
-// Fixed colors for the original 7 categories
-const BASE_CATEGORY_COLORS: Record<string, string> = {
+// Combined default categories: thematic first, then GICS sectors
+export const DEFAULT_CATEGORIES: Category[] = [
+  ...THEMATIC_CATEGORIES,
+  ...GICS_SECTORS,
+];
+
+// Fixed colors for thematic categories
+const THEMATIC_COLORS: Record<string, string> = {
   'Space & Satellite': '#f472b6',
   'Crypto Infrastructure': '#22d3ee',
   'Fintech': '#a78bfa',
@@ -20,6 +42,27 @@ const BASE_CATEGORY_COLORS: Record<string, string> = {
   'Digital Asset Treasury': '#fbbf24',
   'Big Tech': '#60a5fa',
   'Defense Tech': '#f97316',
+};
+
+// Fixed colors for GICS sectors
+const GICS_COLORS: Record<string, string> = {
+  'Energy': '#ef4444',           // red-500
+  'Materials': '#78716c',        // stone-500
+  'Industrials': '#6366f1',      // indigo-500
+  'Consumer Discretionary': '#ec4899', // pink-500
+  'Consumer Staples': '#84cc16', // lime-500
+  'Health Care': '#14b8a6',      // teal-500
+  'Financials': '#8b5cf6',       // violet-500
+  'Information Technology': '#3b82f6', // blue-500
+  'Communication Services': '#f97316', // orange-500
+  'Utilities': '#eab308',        // yellow-500
+  'Real Estate': '#06b6d4',      // cyan-500
+};
+
+// Combined base colors
+const BASE_CATEGORY_COLORS: Record<string, string> = {
+  ...THEMATIC_COLORS,
+  ...GICS_COLORS,
 };
 
 // Additional palette for dynamically-created categories
@@ -61,6 +104,7 @@ export const categoryColors: Record<string, string> = new Proxy(BASE_CATEGORY_CO
 });
 
 export const categoryGradients: Record<string, string> = {
+  // Thematic gradients
   'Space & Satellite': 'from-pink-500 to-rose-400',
   'Crypto Infrastructure': 'from-cyan-400 to-teal-500',
   'Fintech': 'from-violet-400 to-purple-500',
@@ -68,6 +112,18 @@ export const categoryGradients: Record<string, string> = {
   'Digital Asset Treasury': 'from-amber-400 to-yellow-500',
   'Big Tech': 'from-blue-400 to-indigo-500',
   'Defense Tech': 'from-orange-500 to-amber-500',
+  // GICS sector gradients
+  'Energy': 'from-red-500 to-red-400',
+  'Materials': 'from-stone-500 to-stone-400',
+  'Industrials': 'from-indigo-500 to-indigo-400',
+  'Consumer Discretionary': 'from-pink-500 to-pink-400',
+  'Consumer Staples': 'from-lime-500 to-lime-400',
+  'Health Care': 'from-teal-500 to-teal-400',
+  'Financials': 'from-violet-500 to-violet-400',
+  'Information Technology': 'from-blue-500 to-blue-400',
+  'Communication Services': 'from-orange-500 to-orange-400',
+  'Utilities': 'from-yellow-500 to-yellow-400',
+  'Real Estate': 'from-cyan-500 to-cyan-400',
 };
 
 export interface Holding {
@@ -144,7 +200,7 @@ export interface PriceCache {
   lastFetch: string;
 }
 
-export type TimeRange = '1D' | '5D' | '1M' | '3M' | '6M' | 'YTD' | '1Y' | 'ALL';
+export type TimeRange = '1D' | '5D' | '1M' | '3M' | '6M' | 'YTD' | '1Y' | '5Y';
 
 // Risk metrics
 export interface RiskMetrics {

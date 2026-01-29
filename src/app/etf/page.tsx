@@ -42,9 +42,9 @@ const categoryIcons: Record<Category, React.ReactNode> = {
 
 export default function ETFPage() {
   const { holdings, summary, categories } = usePortfolio();
-  const { data: historicalData, loading: chartLoading, range, setRange } = useHistoricalData('ALL');
+  const { data: historicalData, loading: chartLoading, range, setRange } = useHistoricalData('5Y');
   const { etf } = useETF();
-  const { metrics: riskMetrics, loading: riskLoading } = useRiskMetrics(range === 'ALL' ? '1Y' : range);
+  const { metrics: riskMetrics, loading: riskLoading } = useRiskMetrics(range === '5Y' ? '1Y' : range);
   const { isVisible } = useVisibility();
   const [showFullStory, setShowFullStory] = useState(false);
   // ETF Overview page shows simulated ETF values publicly (starting at $100)
@@ -207,7 +207,7 @@ export default function ETFPage() {
 
       {/* Benchmark Comparison */}
       <div className="mb-8">
-        <BenchmarkChart range={range === 'ALL' ? '1Y' : range} />
+        <BenchmarkChart range={range === '5Y' ? '1Y' : range} />
       </div>
 
       {/* Category Weightings */}

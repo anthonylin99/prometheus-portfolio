@@ -255,9 +255,10 @@ export function getDateRangeForFilter(range: TimeRange): Date {
     case '1Y':
       startDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
       break;
-    case 'ALL':
+    case '5Y':
     default:
-      return inceptionDate;
+      startDate = new Date(new Date().setFullYear(new Date().getFullYear() - 5));
+      break;
   }
   
   // If the calculated start date is before inception, use inception date

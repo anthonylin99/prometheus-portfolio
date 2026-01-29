@@ -15,8 +15,10 @@ import { TimeRange } from '@/types/portfolio';
 import { cn } from '@/lib/utils';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { rangeLabels } from '@/data/etf-config';
+import { getChartColor, POPULAR_COMPARISONS } from '@/lib/chart-colors';
+import { X } from 'lucide-react';
 
-const TIME_RANGES: TimeRange[] = ['1D', '5D', '1M', '3M', '6M', 'YTD', '1Y', 'ALL'];
+const TIME_RANGES: TimeRange[] = ['1D', '5D', '1M', '3M', '6M', 'YTD', '1Y', '5Y'];
 
 type CandleData = { date: string; open: number; high: number; low: number; close: number };
 
@@ -32,7 +34,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
   const seriesRefs = useRef<Map<string, ISeriesApi<'Line'> | ISeriesApi<'Candlestick'>>>(new Map());
 
   const [range, setRange] = useState<TimeRange>('1Y');
-  const [compareTicker, setCompareTicker] = useState('');
+  const [compareTickers, setCompareTickers] = useState<string[]>([]);
   const [compareInput, setCompareInput] = useState('');
   const [data, setData] = useState<Record<string, CandleData[]>>({});
   const [loading, setLoading] = useState(true);
@@ -41,8 +43,8 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
   const [currentPriceLoading, setCurrentPriceLoading] = useState(false);
 
   useEffect(() => {
-    setDisplayMode(compareTicker ? 'percent' : 'price');
-  }, [compareTicker]);
+    setDisplayMode(compareTickers.length > 0 ? 'percent' : 'price');
+  }, [compareTickers]);
 
   // Fetch current live price to match holdings page
   const fetchCurrentPrice = useCallback(async () => {
@@ -64,8 +66,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const list = [ticker];
-    if (compareTicker.trim()) list.push(compareTicker.trim().toUpperCase());
+    const list = [ticker, ...compareTickers];
     try {
       const res = await fetch(`/api/historical/compare?tickers=${list.join(',')}&range=${range}`);
       const json = await res.json();
@@ -75,7 +76,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
     } finally {
       setLoading(false);
     }
-  }, [ticker, compareTicker, range]);
+  }, [ticker, compareTickers, range]);
 
   useEffect(() => {
     fetchData();
@@ -224,62 +225,69 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
       }
     }
 
-    const compare = compareTicker.trim().toUpperCase();
-    const ov = (data[compare] || []) as CandleData[];
-    if (compare && ov.length > 0) {
-      if (isPercent) {
-        const f0 = ov[0]?.close;
-        if (f0 > 0 && Number.isFinite(f0)) {
+    // Add comparison tickers
+    compareTickers.forEach((compare, index) => {
+      const ov = (data[compare] || []) as CandleData[];
+      if (ov.length > 0) {
+        const color = getChartColor(index);
+        if (isPercent) {
+          const f0 = ov[0]?.close;
+          if (f0 > 0 && Number.isFinite(f0)) {
+            const lineData = ov
+              .filter(d => Number.isFinite(d.close))
+              .map((d) => ({
+                time: d.date as string,
+                value: ((d.close - f0) / f0) * 100,
+              }));
+            const ls = chart.addSeries(LineSeries, {
+              color,
+              lineWidth: 2,
+              lineStyle: LineStyle.Solid,
+              priceFormat: { type: 'percent', precision: 2 },
+            });
+            ls.setData(lineData);
+            seriesRefs.current.set(compare, ls);
+          }
+        } else {
           const lineData = ov
             .filter(d => Number.isFinite(d.close))
-            .map((d) => ({
-              time: d.date as string,
-              value: ((d.close - f0) / f0) * 100,
-            }));
+            .map((d) => ({ time: d.date as string, value: d.close }));
+          try {
+            chart.priceScale('left').applyOptions({ visible: true });
+          } catch {
+            /* left scale may not exist yet */
+          }
           const ls = chart.addSeries(LineSeries, {
-            color: '#5C7CFA',
+            color,
             lineWidth: 2,
             lineStyle: LineStyle.Solid,
-            priceFormat: { type: 'percent', precision: 2 },
+            priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
+            priceScaleId: 'left',
           });
           ls.setData(lineData);
           seriesRefs.current.set(compare, ls);
         }
-      } else {
-        const lineData = ov
-          .filter(d => Number.isFinite(d.close))
-          .map((d) => ({ time: d.date as string, value: d.close }));
-        try {
-          chart.priceScale('left').applyOptions({ visible: true });
-        } catch {
-          /* left scale may not exist yet */
-        }
-        const ls = chart.addSeries(LineSeries, {
-          color: '#5C7CFA',
-          lineWidth: 2,
-          lineStyle: LineStyle.Solid,
-          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
-          priceScaleId: 'left',
-        });
-        ls.setData(lineData);
-        seriesRefs.current.set(compare, ls);
       }
-    }
+    });
 
     chart.timeScale().fitContent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, ticker, compareTicker, displayMode]);
+  }, [data, ticker, compareTickers, displayMode]);
 
-  const addCompare = () => {
-    const t = compareInput.trim().toUpperCase();
-    if (t && t !== ticker.toUpperCase()) {
-      setCompareTicker(t);
+  const addCompare = (tickerToAdd?: string) => {
+    const t = (tickerToAdd || compareInput).trim().toUpperCase();
+    if (t && t !== ticker.toUpperCase() && !compareTickers.includes(t)) {
+      setCompareTickers([...compareTickers, t]);
       setCompareInput('');
     }
   };
 
-  const clearCompare = () => {
-    setCompareTicker('');
+  const removeCompare = (tickerToRemove: string) => {
+    setCompareTickers(compareTickers.filter((t) => t !== tickerToRemove));
+  };
+
+  const clearAllCompare = () => {
+    setCompareTickers([]);
     setCompareInput('');
   };
 
@@ -301,29 +309,49 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1">
             <input
               type="text"
-              placeholder="Compare (e.g. SPY, QQQ)"
+              placeholder="Compare (e.g. SPY)"
               value={compareInput}
               onChange={(e) => setCompareInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addCompare()}
-              className="w-40 px-2.5 py-1.5 rounded-lg bg-slate-800/80 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 text-sm"
+              className="w-32 px-2.5 py-1.5 rounded-lg bg-slate-800/80 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 text-sm"
             />
             <button
-              onClick={addCompare}
+              onClick={() => addCompare()}
               className="px-2.5 py-1.5 rounded-lg bg-slate-700 text-slate-200 hover:bg-slate-600 text-sm font-medium"
             >
               Add
             </button>
-            {compareTicker && (
+            {compareTickers.length > 0 && (
               <button
-                onClick={clearCompare}
+                onClick={clearAllCompare}
                 className="px-2.5 py-1.5 rounded-lg bg-red-900/40 text-red-300 hover:bg-red-900/60 text-sm"
               >
-                Clear
+                Clear All
               </button>
             )}
+            {/* Popular comparisons */}
+            <div className="hidden md:flex items-center gap-1 ml-1">
+              <span className="text-xs text-slate-500">Quick:</span>
+              {POPULAR_COMPARISONS.slice(0, 3).map((p) => (
+                <button
+                  key={p.ticker}
+                  onClick={() => addCompare(p.ticker)}
+                  disabled={compareTickers.includes(p.ticker) || p.ticker === ticker.toUpperCase()}
+                  className={cn(
+                    'px-2 py-1 rounded text-xs font-medium transition-all',
+                    compareTickers.includes(p.ticker) || p.ticker === ticker.toUpperCase()
+                      ? 'bg-slate-800/50 text-slate-500 cursor-not-allowed'
+                      : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
+                  )}
+                  title={p.label}
+                >
+                  {p.ticker}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex flex-wrap gap-1 items-center">
             <span className="text-xs text-slate-500 mr-1">View:</span>
@@ -362,17 +390,26 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 px-4 pb-1 text-sm">
+      <div className="flex flex-wrap gap-2 px-4 pb-1 text-sm">
         <span className="flex items-center gap-2 text-slate-400">
           <span className="w-2 h-2 rounded-full bg-emerald-500" />
           {ticker} ({displayMode === 'price' ? '$' : '%'})
         </span>
-        {compareTicker && (
-          <span className="flex items-center gap-2 text-slate-400">
-            <span className="w-2 h-2 rounded-full bg-[#5C7CFA]" />
-            {compareTicker} ({displayMode === 'price' ? '$, left' : '%'})
-          </span>
-        )}
+        {compareTickers.map((ct, index) => (
+          <button
+            key={ct}
+            onClick={() => removeCompare(ct)}
+            className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800/60 hover:bg-slate-700 transition-colors group"
+            title={`Click to remove ${ct}`}
+          >
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: getChartColor(index) }}
+            />
+            <span className="text-slate-400">{ct}</span>
+            <X className="w-3 h-3 text-slate-500 group-hover:text-red-400" />
+          </button>
+        ))}
       </div>
 
       <div className="relative">

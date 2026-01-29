@@ -1,14 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import { Header } from '@/components/layout/Header';
 import { AllocationDonut } from '@/components/charts/AllocationDonut';
 import { HoldingsBar } from '@/components/charts/HoldingsBar';
 import { TopHoldingCard } from '@/components/cards/TopHoldingCard';
 import { StatCard } from '@/components/cards/StatCard';
-import { usePortfolio, useUserPortfolio, useUserProfile } from '@/lib/hooks';
+import { PortfolioSelector, PortfolioView } from '@/components/portfolio/PortfolioSelector';
+import { TodaysMovers } from '@/components/dashboard/TodaysMovers';
+import { useUserPortfolio, useUserProfile, useAggregatedPortfolio } from '@/lib/hooks';
+import { useClearSensitiveData } from '@/lib/use-clear-on-leave';
 import { formatCurrency } from '@/lib/utils';
 import {
   Wallet,
@@ -19,31 +22,77 @@ import {
   Plus,
   Users,
   Loader2,
+  Lock,
 } from 'lucide-react';
 import Link from 'next/link';
-import { etfConfig } from '@/data/etf-config';
 
 export default function UserDashboard() {
   const router = useRouter();
   const { status } = useSession();
   const isAuthenticated = status === 'authenticated';
+  const isLoading = status === 'loading';
   const { profile, loading: profileLoading } = useUserProfile();
-  
-  // Use public portfolio for unauthenticated, user portfolio for authenticated
-  const publicPortfolio = usePortfolio();
+  const [portfolioView, setPortfolioView] = useState<PortfolioView>('personal');
+
+  // Clear sensitive data from browser history on navigation
+  useClearSensitiveData();
+
+  // Only fetch portfolio data when authenticated
   const userPortfolio = useUserPortfolio();
-  
-  const { holdings, summary, categories, loading, error, refresh } = 
-    isAuthenticated ? userPortfolio : publicPortfolio;
+  const aggregatedPortfolio = useAggregatedPortfolio(portfolioView);
+
+  // Determine which data to use based on view selection (only for authenticated users)
+  const { holdings, summary, categories, loading, error, refresh } =
+    portfolioView === 'personal'
+      ? userPortfolio
+      : aggregatedPortfolio;
 
   // Redirect to onboarding if authenticated but not onboarded
+  // Use replace() to prevent back button from showing this page
   useEffect(() => {
     if (isAuthenticated && !profileLoading && profile && !profile.onboarded) {
-      router.push('/onboarding');
+      router.replace('/onboarding');
     }
   }, [isAuthenticated, profileLoading, profile, router]);
 
-  if (isAuthenticated && profileLoading) {
+  // Show loading while checking auth status
+  if (isLoading) {
+    return (
+      <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 text-violet-500 animate-spin" />
+          <p className="text-slate-400">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // SECURITY: Show sign-in prompt when not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
+        <div className="glass-card p-10 rounded-2xl text-center max-w-md">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-violet-500/20 flex items-center justify-center">
+            <Lock className="w-8 h-8 text-violet-400" />
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2">
+            Portfolio Access Required
+          </h2>
+          <p className="text-slate-400 text-sm mb-6">
+            Sign in to view your portfolio and track your investments securely.
+          </p>
+          <button
+            onClick={() => signIn('google')}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 hover:from-violet-500 hover:to-purple-500 transition-all"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (profileLoading) {
     return (
       <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -82,8 +131,19 @@ export default function UserDashboard() {
   }
 
   const topHoldings = holdings.slice(0, 5);
-  const etfTicker = isAuthenticated ? (profile?.etfTicker || 'ETF') : etfConfig.ticker;
-  const etfName = isAuthenticated ? (profile?.etfName || 'My Portfolio') : etfConfig.name;
+
+  // Determine header title based on view
+  const getHeaderInfo = () => {
+    if (portfolioView === 'combined') {
+      return { ticker: 'COMBINED', name: 'Combined Portfolio' };
+    }
+    return {
+      ticker: profile?.etfTicker || 'ETF',
+      name: profile?.etfName || 'My Portfolio',
+    };
+  };
+
+  const { ticker: etfTicker, name: etfName } = getHeaderInfo();
 
   // Empty portfolio state
   if (holdings.length === 0 && !loading) {
@@ -134,7 +194,16 @@ export default function UserDashboard() {
       />
 
       {/* Quick Actions */}
-      <div className="flex flex-wrap gap-3 mb-8">
+      <div className="flex flex-wrap items-center gap-3 mb-8">
+        {/* Portfolio Selector */}
+        <PortfolioSelector
+          selected={portfolioView}
+          onSelect={setPortfolioView}
+          personalLabel={profile?.etfTicker ? `$${profile.etfTicker}` : 'My Portfolio'}
+        />
+
+        <div className="flex-1" />
+
         <button
           onClick={refresh}
           disabled={loading}
@@ -221,29 +290,37 @@ export default function UserDashboard() {
         </div>
       </div>
 
-      {/* Top Holdings */}
-      {topHoldings.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-xl font-bold text-white">Top Holdings</h3>
-              <p className="text-sm text-slate-400">
-                Largest positions in portfolio
-              </p>
+      {/* Today's Movers + Top Holdings Row */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-8">
+        {/* Today's Movers */}
+        <div className="xl:col-span-4">
+          <TodaysMovers holdings={holdings} maxItems={3} />
+        </div>
+
+        {/* Top Holdings */}
+        {topHoldings.length > 0 && (
+          <div className="xl:col-span-8">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-bold text-white">Top Holdings</h3>
+                <p className="text-sm text-slate-400">
+                  Largest positions
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {topHoldings.slice(0, 4).map((holding, index) => (
+                <TopHoldingCard
+                  key={holding.ticker}
+                  holding={holding}
+                  rank={index + 1}
+                  portfolioPercentage={holding.weight}
+                />
+              ))}
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {topHoldings.map((holding, index) => (
-              <TopHoldingCard
-                key={holding.ticker}
-                holding={holding}
-                rank={index + 1}
-                portfolioPercentage={holding.weight}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

@@ -172,6 +172,38 @@ export async function getQuoteForMetrics(ticker: string): Promise<YahooQuote | n
   }
 }
 
+/**
+ * Fetch stock metadata including sector and industry.
+ * Used for auto-categorization when adding holdings.
+ */
+export interface StockMetadata {
+  ticker: string;
+  name: string;
+  sector?: string;
+  industry?: string;
+  exchange?: string;
+}
+
+export async function getStockMetadata(ticker: string): Promise<StockMetadata | null> {
+  try {
+    const yahooTicker = getYahooTicker(ticker);
+    const quote = await yahooFinance.quote(yahooTicker);
+
+    if (!quote) return null;
+
+    return {
+      ticker: ticker.toUpperCase(),
+      name: quote.shortName || quote.longName || ticker.toUpperCase(),
+      sector: quote.sector || undefined,
+      industry: quote.industry || undefined,
+      exchange: quote.exchange || undefined,
+    };
+  } catch (error) {
+    console.error(`Error fetching metadata for ${ticker}:`, error);
+    return null;
+  }
+}
+
 // Check if US market is open (9:30 AM - 4:00 PM ET, Mon-Fri)
 export function isMarketOpen(): boolean {
   const now = new Date();

@@ -56,8 +56,8 @@ export async function POST(request: NextRequest) {
     if (isRedisAvailable() && redis) {
       try {
         await redis.set(key, out, { ex: Math.min(CACHE_TTL_SEC, 60 * 60) });
-      } catch {
-        // ignore
+      } catch (err) {
+        console.warn(`[generate-catalyst] Redis SET (default) failed for ${key}:`, err);
       }
     }
     return NextResponse.json(out);
@@ -67,16 +67,16 @@ export async function POST(request: NextRequest) {
     try {
       const cached = await redis.get<CatalystResponse>(key);
       if (cached) return NextResponse.json(cached);
-    } catch {
-      // continue to generate
+    } catch (err) {
+      console.warn(`[generate-catalyst] Redis cache check failed for ${key}:`, err);
     }
   }
 
   if (forceRegenerate && isRedisAvailable() && redis) {
     try {
       await redis.del(key);
-    } catch {
-      // non-fatal
+    } catch (err) {
+      console.warn(`[generate-catalyst] Redis DEL failed for ${key}:`, err);
     }
   }
 
@@ -142,8 +142,8 @@ Respond with ONLY the catalyst text, no preamble.`;
     if (isRedisAvailable() && redis) {
       try {
         await redis.set(key, out, { ex: CACHE_TTL_SEC });
-      } catch {
-        // non-fatal
+      } catch (err) {
+        console.warn(`[generate-catalyst] Redis SET failed for ${key}:`, err);
       }
     }
 

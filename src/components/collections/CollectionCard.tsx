@@ -1,13 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
+import { AddCollectionModal } from './AddCollectionModal';
 import type { Collection, CollectionCategory } from '@/data/collections-seed';
 
 interface CollectionCardProps {
   collection: Collection & { category?: CollectionCategory };
   className?: string;
+  onAddSuccess?: () => void;
 }
 
 const categoryBorderColors: Record<string, string> = {
@@ -19,25 +24,46 @@ const categoryBorderColors: Record<string, string> = {
   'healthcare-biotech': 'border-l-emerald-500',
 };
 
-export function CollectionCard({ collection, className }: CollectionCardProps) {
+export function CollectionCard({ collection, className, onAddSuccess }: CollectionCardProps) {
+  const { status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+  const [showAddModal, setShowAddModal] = useState(false);
+
   const categoryColor = collection.category?.color || '#6366f1';
   const stockCount = collection.stocks.length;
   const displayStocks = collection.stocks.slice(0, 9);
   const remainingCount = Math.max(0, stockCount - 9);
   const borderClass = categoryBorderColors[collection.categoryId] || 'border-l-violet-500';
 
+  const handleAddClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowAddModal(true);
+  };
+
   return (
-    <Link
-      href={`/explore/collection/${collection.id}`}
-      className={cn(
-        'group block rounded-2xl p-5 border-l-[3px] transition-all duration-200',
-        'bg-slate-800/40 border border-slate-700/50',
-        'hover:bg-slate-800/60 hover:border-slate-600/50',
-        'hover:shadow-lg hover:shadow-slate-900/50 hover:-translate-y-0.5',
-        borderClass,
-        className
-      )}
-    >
+    <>
+      <Link
+        href={`/explore/collection/${collection.id}`}
+        className={cn(
+          'group block rounded-2xl p-5 border-l-[3px] transition-all duration-200 relative',
+          'bg-slate-800/40 border border-slate-700/50',
+          'hover:bg-slate-800/60 hover:border-slate-600/50',
+          'hover:shadow-lg hover:shadow-slate-900/50 hover:-translate-y-0.5',
+          borderClass,
+          className
+        )}
+      >
+        {/* Add to portfolio button */}
+        {isAuthenticated && (
+          <button
+            onClick={handleAddClick}
+            className="absolute top-4 right-4 p-2.5 rounded-xl bg-[#9b8ac4]/15 text-[#9b8ac4] border border-[#9b8ac4]/25 hover:bg-[#7c6baa] hover:text-white hover:border-transparent transition-all duration-200 z-10"
+            title="Add to portfolio"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        )}
       {/* Header */}
       <div className="flex items-start justify-between mb-2">
         <div className="flex-1 min-w-0">
@@ -99,5 +125,16 @@ export function CollectionCard({ collection, className }: CollectionCardProps) {
         ))}
       </div>
     </Link>
+
+      {/* Add Modal */}
+      {showAddModal && (
+        <AddCollectionModal
+          collectionName={collection.name}
+          tickers={collection.stocks.map((s) => ({ ticker: s.ticker, name: s.note || s.ticker }))}
+          onClose={() => setShowAddModal(false)}
+          onSuccess={onAddSuccess}
+        />
+      )}
+    </>
   );
 }

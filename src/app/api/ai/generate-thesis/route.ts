@@ -16,7 +16,8 @@ export async function GET(request: NextRequest) {
     try {
       const cached = await redis.get<string>(key);
       return NextResponse.json({ analysis: cached ?? null });
-    } catch {
+    } catch (err) {
+      console.warn(`[generate-thesis] Redis GET failed for ${key}:`, err);
       return NextResponse.json({ analysis: null });
     }
   }
@@ -44,8 +45,8 @@ export async function POST(request: NextRequest) {
       try {
         const cached = await redis.get<string>(key);
         if (cached) return NextResponse.json({ analysis: cached });
-      } catch {
-        // continue to generate
+      } catch (err) {
+        console.warn(`[generate-thesis] Redis cache check failed for ${key}:`, err);
       }
     }
 
@@ -121,8 +122,8 @@ Deliver the full equity research report in the required structure.`,
     if (isRedisAvailable() && redis) {
       try {
         await redis.set(key, analysis);
-      } catch {
-        // non-fatal
+      } catch (err) {
+        console.warn(`[generate-thesis] Redis SET failed for ${key}:`, err);
       }
     }
 

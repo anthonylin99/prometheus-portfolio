@@ -1,0 +1,426 @@
+================================================================================
+PROMETHEUS ETF - PHASE 2 IMPLEMENTATION CHANGELOG
+Date: January 28, 2026
+================================================================================
+
+OVERVIEW
+--------
+This document details all changes made during Phase 2 implementation.
+Design Philosophy: Robinhood's data density + Luma's elegant gradients
+Theme: Yankee Candle Lavender - deep purple, soothing, dark-mode oriented
+
+================================================================================
+P0 - CODE CLEANUP
+================================================================================
+
+Files Modified:
+- src/app/api/ai/generate-thesis/route.ts
+- src/app/api/ai/generate-catalyst/route.ts
+- src/app/api/ai/refine-thesis/route.ts
+- src/app/api/ai/generate-structured-thesis/route.ts
+
+Changes:
+- Added console.warn logging to all empty catch blocks (13 instances total)
+- Pattern: catch (err) { console.warn(`[route-name] Operation failed:`, err); }
+
+Files Deleted:
+- public/file.svg
+- public/globe.svg
+- public/next.svg
+- public/vercel.svg
+- public/window.svg
+
+================================================================================
+P1 - EDIT HOLDINGS BUG FIX
+================================================================================
+
+Problem: GOOGL edit fails with "not found" error due to case sensitivity
+
+Files Modified:
+- src/lib/user-portfolio-service.ts (lines 85-95)
+- src/components/holdings/EditHoldingModal.tsx
+- src/components/tables/HoldingsTable.tsx
+
+Changes:
+1. user-portfolio-service.ts:
+   - updateUserHolding(): Added case-insensitive ticker matching
+     const normalizedTicker = ticker.toUpperCase().trim();
+     const index = portfolio.holdings.findIndex(
+       (h) => h.ticker.toUpperCase() === normalizedTicker
+     );
+
+   - removeUserHolding(): Same case-insensitive fix applied
+
+2. EditHoldingModal.tsx:
+   - Added optional onDelete prop to interface
+   - Added deleting, showDeleteConfirm state variables
+   - Added handleDelete() async function
+   - Added delete confirmation UI with cancel/confirm buttons
+   - Added trash icon button in actions row (Trash2 from lucide-react)
+
+3. HoldingsTable.tsx:
+   - Added handleEditDelete() function that calls DELETE /api/user/holdings/[ticker]
+   - Passed onDelete prop to EditHoldingModal
+
+================================================================================
+P2 - LAVENDER THEME REDESIGN
+================================================================================
+
+Files Modified:
+- src/app/globals.css
+- src/components/layout/Sidebar.tsx
+
+New Color Palette (CSS Variables in globals.css):
+  Background:
+    --bg-primary: #08070f
+    --bg-secondary: #0d0b18
+    --bg-tertiary: #141022
+    --bg-card: rgba(18, 14, 30, 0.7)
+    --bg-card-hover: rgba(25, 20, 42, 0.85)
+
+  Accents:
+    --accent-primary: #9b8ac4      (Soft lavender)
+    --accent-secondary: #7c6baa    (Dusty purple)
+    --accent-tertiary: #b8a8d9     (Light lavender)
+    --accent-muted: #6b5a8e        (Muted purple)
+    --accent-rose: #c4a8b8         (Dusty rose complement)
+    --accent-positive: #7bc4a8     (Muted sage green)
+    --accent-negative: #c48a8a     (Muted rose red)
+
+  Text:
+    --text-primary: #f5f3fa
+    --text-secondary: #a8a0b8
+    --text-muted: #706880
+
+  Gradients:
+    --gradient-primary: linear-gradient(135deg, #7c6baa 0%, #9b8ac4 50%, #b8a8d9 100%)
+    --gradient-glow: radial-gradient(ellipse at 50% 0%, rgba(155, 138, 196, 0.12) 0%, transparent 60%)
+
+Updated Effects:
+  - .bg-gradient-radial: Updated to lavender color scheme
+  - .glass-card:hover: Updated border-color and box-shadow to #9b8ac4
+  - .glow-text, .glow-box: Updated to lavender glow colors
+  - .bg-orb-1, .bg-orb-2, .bg-orb-3: Updated floating orb colors
+  - .gradient-border::before: Updated gradient to lavender palette
+
+Sidebar.tsx Updates:
+  - Background: bg-[#0a091a]/90
+  - Border: border-[rgba(155,138,196,0.15)]
+  - Logo shadow: shadow-[#9b8ac4]/25
+  - ETF label: text-[#9b8ac4]
+
+================================================================================
+P3 - DIP FINDER PORTFOLIO SELECTION
+================================================================================
+
+Files Modified:
+- src/lib/circle-service.ts
+- src/app/api/sma/route.ts
+- src/app/dip-finder/page.tsx
+
+Changes:
+1. circle-service.ts:
+   - Added getCircleByUserId() function to look up user's circle
+
+2. api/sma/route.ts:
+   - Added query params: portfolioType ('personal' | 'sample' | 'friend'), userId
+   - Added logic to fetch from different portfolio sources:
+     * 'personal': User's own portfolio (default)
+     * 'sample': Prometheus ETF from portfolio.json
+     * 'friend': Circle member's portfolio (with membership verification)
+
+3. dip-finder/page.tsx:
+   - Added PortfolioOption interface and PortfolioType type
+   - Added useCircle() hook import
+   - Added selectedPortfolio state with dropdown
+   - Added showPortfolioDropdown state
+   - Built dynamic portfolioOptions array (personal, sample, circle members)
+   - Added portfolio selector UI when source === 'portfolio'
+   - Updated fetchSMAData to include portfolioType and userId params
+
+================================================================================
+P4 - WATCHLIST IN SIDEBAR
+================================================================================
+
+Files Modified:
+- src/components/layout/Sidebar.tsx
+
+Changes:
+- Added Star import from lucide-react
+- Added to publicNav array: { name: 'Watchlist', href: '/watchlist', icon: Star }
+- Added to authNav array: { name: 'Watchlist', href: '/watchlist', icon: Star }
+
+================================================================================
+P5 - EXPLORE + BUTTON VISIBILITY
+================================================================================
+
+Files Modified:
+- src/components/collections/CollectionCard.tsx
+
+Changes:
+- Removed opacity-0 group-hover:opacity-100 from add button
+- Updated button styling to lavender theme:
+  className="absolute top-4 right-4 p-2.5 rounded-xl
+    bg-[#9b8ac4]/15 text-[#9b8ac4]
+    border border-[#9b8ac4]/25
+    hover:bg-[#7c6baa] hover:text-white hover:border-transparent
+    transition-all duration-200 z-10"
+
+================================================================================
+P6 - LAYOUT & ASPECT RATIO FIXES
+================================================================================
+
+Files Modified:
+- src/app/explore/collection/[id]/page.tsx
+
+Changes:
+- Converted single-column layout to two-column grid (lg:grid-cols-12)
+- Left column (lg:col-span-7): Holdings list with refresh button
+- Right column (lg:col-span-5): Three new cards:
+
+  1. Performance Summary Card:
+     - Top Gainer (ticker + percentage)
+     - Top Loser (ticker + percentage)
+     - Average Change
+     - Positive/Negative count
+
+  2. Category Info Card:
+     - Category description
+     - Methodology display
+
+  3. Quick Stats Card:
+     - Total Stocks count
+     - Risk Level (color-coded)
+     - Category name
+
+================================================================================
+P7 - CHART 5Y TIME RANGE
+================================================================================
+
+Problem: "ALL" was showing only 2 years, users wanted 5 years
+
+Files Modified:
+- src/types/portfolio.ts
+- src/data/etf-config.ts
+- src/components/charts/HoldingsPriceChart.tsx
+- src/components/charts/TradingViewChart.tsx
+- src/app/api/historical/compare/route.ts
+- src/app/api/historical/route.ts
+- src/lib/portfolio-service.ts
+- src/lib/hooks.ts
+- src/app/api/benchmarks/route.ts
+- src/app/etf/page.tsx
+
+Changes:
+1. types/portfolio.ts:
+   - Changed TimeRange type: 'ALL' -> '5Y'
+
+2. etf-config.ts:
+   - Changed rangeLabels: 'ALL': 'Since inception' -> '5Y': 'Past 5 years'
+
+3. Chart components:
+   - Updated TIME_RANGES arrays to use '5Y' instead of 'ALL'
+
+4. API routes:
+   - All getStartDateForRange functions:
+     case '5Y' -> new Date().setFullYear(now.getFullYear() - 5)
+
+5. hooks.ts:
+   - useHistoricalData default: 'ALL' -> '5Y'
+
+6. etf/page.tsx:
+   - Updated initial range and fallback comparisons from 'ALL' to '5Y'
+
+================================================================================
+P8 - AUTO-ADD STOCK SECTORS
+================================================================================
+
+Files Modified:
+- src/lib/yahoo-finance.ts
+- src/app/api/user/holdings/route.ts
+
+Changes:
+1. yahoo-finance.ts:
+   - Added StockMetadata interface (ticker, name, sector, industry, exchange)
+   - Added getStockMetadata() function to fetch from Yahoo Finance
+
+2. api/user/holdings/route.ts:
+   - Added imports: getStockMetadata, resolveCategory
+   - When no category provided:
+     * Fetch metadata from Yahoo Finance
+     * Get existing categories from user portfolio
+     * Auto-resolve category using resolveCategory()
+     * Also auto-populate name if not provided
+
+================================================================================
+P9 - DASHBOARD VS HOLDINGS DIFFERENTIATION
+================================================================================
+
+Files Created:
+- src/components/dashboard/TodaysMovers.tsx
+
+Files Modified:
+- src/app/dashboard/page.tsx
+
+Changes:
+1. TodaysMovers.tsx (new component):
+   - Shows top 3 gainers and top 3 losers from portfolio
+   - Links to individual holding pages
+   - Uses CompanyLogo, formatPercentagePrecise
+   - Grid layout with TrendingUp/TrendingDown icons
+
+2. dashboard/page.tsx:
+   - Added TodaysMovers import
+   - Reorganized bottom section to two-column grid (xl:grid-cols-12)
+   - TodaysMovers in xl:col-span-4
+   - Top Holdings in xl:col-span-8 (reduced from 5 to 4 cards)
+
+================================================================================
+P10 - TECHNICAL ANALYSIS SERVICE
+================================================================================
+
+Files Created:
+- src/lib/technical-analysis.ts
+- src/types/insights.ts
+- src/app/api/insights/technical/[ticker]/route.ts
+- src/app/api/insights/portfolio/route.ts
+
+Changes:
+1. technical-analysis.ts:
+   Exports:
+   - RSIData interface (value, signal, description)
+   - MACDData interface (macd, signal, histogram, trend, description)
+   - SupportResistanceData interface
+   - FiftyTwoWeekData interface
+   - SignalStrength type ('strong_buy' | 'buy' | 'hold' | 'sell' | 'strong_sell')
+   - TechnicalSignal interface (combined analysis result)
+
+   Functions:
+   - calculateRSI(prices, period=14): RSI with overbought/oversold signals
+   - calculateMACD(prices): MACD line, signal line, histogram
+   - calculateEMA(prices, period): Helper for exponential moving average
+   - calculateSupportResistance(data, lookback=20): Support/resistance levels
+   - calculate52WeekPosition(current, high, low): Position in 52-week range
+   - calculateOverallSignal(rsi, macd, 52week): Combined signal score
+   - generateTechnicalSignal(ticker, data, 52wh, 52wl): Full analysis
+
+2. types/insights.ts:
+   - AlertPriority, AlertType types
+   - Alert interface (type, ticker, message, priority, actionHint)
+   - OpportunityType type
+   - Opportunity interface (type, tickers, rationale, priority)
+   - PortfolioHealthBreakdown interface
+   - PortfolioHealth interface (score, breakdown, assessment, summary)
+   - PortfolioInsights interface (signals, alerts, opportunities, health)
+   - InsightsResponse interface
+
+3. api/insights/technical/[ticker]/route.ts:
+   - GET endpoint for single ticker technical analysis
+   - Fetches 6 months historical data + 52-week high/low
+   - Returns TechnicalSignal
+
+4. api/insights/portfolio/route.ts:
+   - GET endpoint for portfolio-wide insights (auth required)
+   - Analyzes up to 10 holdings
+   - Generates alerts from RSI, support/resistance, 52-week signals
+   - Identifies opportunities (dip_buy, take_profit)
+   - Calculates portfolio health score (diversification, momentum, balance)
+   - Returns PortfolioInsights
+
+================================================================================
+P11 - ETF OVERVIEW → INSIGHTS HUB
+================================================================================
+
+Files Created:
+- src/components/insights/HealthScoreCard.tsx
+- src/components/insights/SignalsCard.tsx
+- src/components/insights/OpportunityCard.tsx
+- src/components/insights/TechnicalMetrics.tsx
+- src/app/insights/page.tsx
+
+Files Modified:
+- src/components/layout/Sidebar.tsx
+
+Changes:
+1. HealthScoreCard.tsx:
+   - Displays portfolio health score (0-100) with color coding
+   - Shows assessment badge (Excellent/Good/Fair/Needs Attention)
+   - Progress bar visualization
+   - Breakdown grid: Diversity, Momentum, Balance
+
+2. SignalsCard.tsx:
+   - Lists priority alerts with priority badges (HIGH/MEDIUM/LOW)
+   - Icons based on alert type (TrendingUp, TrendingDown, Activity)
+   - Links to holding detail pages
+   - Shows action hints when available
+
+3. OpportunityCard.tsx:
+   - Displays opportunities (dip_buy, take_profit, rebalance, momentum_entry)
+   - Color-coded cards by opportunity type
+   - Lists affected tickers as clickable badges
+
+4. TechnicalMetrics.tsx:
+   - Ticker selector dropdown with signal badges
+   - Overall signal display with score
+   - Metrics grid: RSI, MACD, 52W Range, Support/Resistance
+   - Links to holding detail page
+
+5. insights/page.tsx:
+   - Auth required (shows sign-in prompt if not authenticated)
+   - Fetches from /api/insights/portfolio
+   - 2x2 grid layout:
+     * Top: HealthScoreCard + SignalsCard
+     * Bottom: TechnicalMetrics + OpportunityCard
+   - Refresh button with loading state
+   - "Analyzing X holdings" indicator
+
+6. Sidebar.tsx:
+   - Added Sparkles import from lucide-react
+   - Added to authNav: { name: 'Insights', href: '/insights', icon: Sparkles }
+   - Position: After Holdings, before Dip Finder
+
+================================================================================
+BUILD VERIFICATION
+================================================================================
+
+TypeScript Check: PASSED (npx tsc --noEmit)
+Production Build: PASSED (npm run build)
+
+New Routes Added:
+- /insights (static)
+- /api/insights/portfolio (dynamic)
+- /api/insights/technical/[ticker] (dynamic)
+
+================================================================================
+DEPENDENCIES
+================================================================================
+
+No new npm packages were added. All features use existing dependencies:
+- lightweight-charts (charts)
+- lucide-react (icons)
+- yahoo-finance2 (data)
+- next-auth (auth)
+- @upstash/redis (caching)
+
+================================================================================
+TESTING RECOMMENDATIONS
+================================================================================
+
+1. Theme: Visit all pages, check color consistency in dark mode
+2. Edit Holdings: Test edit and delete on various tickers (test case sensitivity)
+3. Dip Finder: Test with personal portfolio, Prometheus ETF, and circle members
+4. Charts: Verify 5Y range loads 5 years of data
+5. Insights: Login, verify health score, alerts, opportunities load correctly
+6. Auto-sectors: Add a new holding without category, verify auto-detection
+
+================================================================================
+KNOWN LIMITATIONS
+================================================================================
+
+1. Insights API analyzes max 10 holdings for performance
+2. Technical analysis requires minimum 26 days of historical data
+3. Circle member portfolios require active circle membership
+
+================================================================================
+END OF CHANGELOG
+================================================================================

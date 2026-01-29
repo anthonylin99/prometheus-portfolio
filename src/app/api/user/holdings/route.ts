@@ -5,6 +5,8 @@ import { getAppUser, isOwnerEmail } from '@/lib/user-service';
 import { logActivity } from '@/lib/circle-service';
 import { upsertHolding } from '@/lib/holdings-service';
 import { Category } from '@/types/portfolio';
+import { getStockMetadata } from '@/lib/yahoo-finance';
+import { resolveCategory } from '@/lib/category-mapping';
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -23,16 +25,39 @@ export async function POST(request: Request) {
       );
     }
 
+    // If no category provided, fetch from Yahoo Finance and auto-resolve
+    let resolvedCategory: Category = category || 'Big Tech';
+    let resolvedName = name || ticker.toUpperCase();
+
+    if (!category) {
+      try {
+        const metadata = await getStockMetadata(ticker);
+        if (metadata) {
+          // Get existing categories from user's portfolio for context
+          const { getUserPortfolio } = await import('@/lib/user-portfolio-service');
+          const portfolio = await getUserPortfolio(session.user.id);
+          const existingCategories = Array.from(new Set(portfolio.holdings.map(h => h.category)));
+
+          resolvedCategory = resolveCategory(metadata.sector, metadata.industry, existingCategories);
+          if (!name && metadata.name) {
+            resolvedName = metadata.name;
+          }
+        }
+      } catch (err) {
+        console.warn(`Failed to fetch metadata for ${ticker}, using default category:`, err);
+      }
+    }
+
     const isOwner = session.user.email && isOwnerEmail(session.user.email);
 
     if (isOwner) {
       // Owner adds to the main Prometheus ETF portfolio
       const success = await upsertHolding({
         ticker: ticker.toUpperCase(),
-        name: name || ticker.toUpperCase(),
+        name: resolvedName,
         shares: Number(shares),
         costBasis: costBasis ? Number(costBasis) : undefined,
-        category: (category as Category) || 'Big Tech',
+        category: resolvedCategory,
         description: description || '',
       });
 
@@ -43,7 +68,7 @@ export async function POST(request: Request) {
         );
       }
 
-      return NextResponse.json({ success: true, isOwner: true });
+      return NextResponse.json({ success: true, isOwner: true, resolvedCategory });
     }
 
     // Regular user adds to their own portfolio
@@ -55,10 +80,10 @@ export async function POST(request: Request) {
 
     const holding: UserHolding = {
       ticker: ticker.toUpperCase(),
-      name: name || ticker.toUpperCase(),
+      name: resolvedName,
       shares: Number(shares),
       costBasis: costBasis ? Number(costBasis) : undefined,
-      category: (category as Category) || 'Big Tech',
+      category: resolvedCategory,
       description: description || '',
       addedAt: new Date().toISOString(),
     };

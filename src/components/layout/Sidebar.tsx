@@ -14,6 +14,9 @@ import {
   Users,
   LogIn,
   LogOut,
+  TrendingDown,
+  Star,
+  Sparkles,
 } from 'lucide-react';
 import { cn, formatCurrency, formatPercentagePrecise } from '@/lib/utils';
 import { useState, useEffect } from 'react';
@@ -33,13 +36,17 @@ const publicNav = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Holdings', href: '/holdings', icon: Wallet },
   { name: 'Explore', href: '/explore', icon: Compass },
+  { name: 'Watchlist', href: '/watchlist', icon: Star },
   { name: 'ETF Overview', href: '/etf', icon: FileText },
 ];
 
 const authNav = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Holdings', href: '/holdings', icon: Wallet },
+  { name: 'Insights', href: '/insights', icon: Sparkles },
+  { name: 'Dip Finder', href: '/dip-finder', icon: TrendingDown },
   { name: 'Explore', href: '/explore', icon: Compass },
+  { name: 'Watchlist', href: '/watchlist', icon: Star },
   { name: 'Circle', href: '/circle', icon: Users },
   { name: 'ETF Overview', href: '/etf', icon: FileText },
 ];
@@ -134,14 +141,14 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside className={cn(
         "fixed top-0 left-0 z-40 h-screen w-56 transform transition-transform duration-300 ease-out",
-        "bg-[#080812]/90 backdrop-blur-xl border-r border-[rgba(139,92,246,0.15)]",
+        "bg-[#0a091a]/90 backdrop-blur-xl border-r border-[rgba(155,138,196,0.15)]",
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         {/* Logo Section */}
-        <div className="p-4 border-b border-[rgba(139,92,246,0.1)]">
+        <div className="p-4 border-b border-[rgba(155,138,196,0.1)]">
           <Link href={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-3 group" onClick={() => setIsOpen(false)}>
             <div className="relative">
-              <div className="w-11 h-11 rounded-xl overflow-hidden shadow-lg shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">
+              <div className="w-11 h-11 rounded-xl overflow-hidden shadow-lg shadow-[#9b8ac4]/25 group-hover:shadow-[#9b8ac4]/40 transition-shadow">
                 <Image
                   src="/prometheus.png"
                   alt="Prometheus ETF"
@@ -153,7 +160,7 @@ export function Sidebar() {
             </div>
             <div>
               <h1 className="text-lg font-bold text-white tracking-tight">Prometheus</h1>
-              <span className="text-xs font-medium text-violet-400 tracking-widest">ETF</span>
+              <span className="text-xs font-medium text-[#9b8ac4] tracking-widest">ETF</span>
             </div>
           </Link>
         </div>
@@ -191,7 +198,7 @@ export function Sidebar() {
         </nav>
 
         {/* Stats Summary */}
-        <div className="absolute bottom-8 left-0 right-0 p-4 border-t border-[rgba(139,92,246,0.1)]">
+        <div className="absolute bottom-8 left-0 right-0 p-4 border-t border-[rgba(155,138,196,0.1)]">
           {/* Auth Button */}
           {isAuthenticated ? (
             <button

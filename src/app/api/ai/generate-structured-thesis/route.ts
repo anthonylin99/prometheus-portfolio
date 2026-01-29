@@ -55,7 +55,8 @@ export async function GET(request: NextRequest) {
     try {
       const cached = await redis.get<StructuredThesisResponse>(key);
       return NextResponse.json(cached ? { ...cached } : { thesis: null, oneLinerSummary: null, generatedAt: null });
-    } catch {
+    } catch (err) {
+      console.warn(`[generate-structured-thesis] Redis GET failed for ${key}:`, err);
       return NextResponse.json({ thesis: null, oneLinerSummary: null, generatedAt: null });
     }
   }
@@ -90,16 +91,16 @@ export async function POST(request: NextRequest) {
     try {
       const cached = await redis.get<StructuredThesisResponse>(key);
       if (cached) return NextResponse.json(cached);
-    } catch {
-      // continue to generate
+    } catch (err) {
+      console.warn(`[generate-structured-thesis] Redis cache check failed for ${key}:`, err);
     }
   }
 
   if (forceRegenerate && isRedisAvailable() && redis) {
     try {
       await redis.del(key);
-    } catch {
-      // non-fatal
+    } catch (err) {
+      console.warn(`[generate-structured-thesis] Redis DEL failed for ${key}:`, err);
     }
   }
 
@@ -168,8 +169,8 @@ Respond with ONLY a valid JSON object. No markdown, no code fences, no commentar
     if (isRedisAvailable() && redis) {
       try {
         await redis.set(key, parsed, { ex: CACHE_TTL_SEC });
-      } catch {
-        // non-fatal
+      } catch (err) {
+        console.warn(`[generate-structured-thesis] Redis SET failed for ${key}:`, err);
       }
     }
 

@@ -2,11 +2,13 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { HoldingWithPrice, getCategoryColor } from '@/types/portfolio';
+import { useSession } from 'next-auth/react';
+import { HoldingWithPrice, getCategoryColor, DEFAULT_CATEGORIES } from '@/types/portfolio';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { useVisibility } from '@/lib/visibility-context';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
-import { ChevronUp, ChevronDown, ArrowUpDown, Search, ArrowUpRight, TrendingUp, TrendingDown } from 'lucide-react';
+import { EditHoldingModal } from '@/components/holdings/EditHoldingModal';
+import { ChevronUp, ChevronDown, ArrowUpDown, Search, ArrowUpRight, TrendingUp, TrendingDown, Pencil } from 'lucide-react';
 
 type VsBenchmarkRange = '1M' | '3M' | 'YTD' | '1Y';
 
@@ -21,6 +23,7 @@ interface VsBenchmarkResult {
 interface HoldingsTableProps {
   holdings: HoldingWithPrice[];
   totalValue: number;
+  onRefresh?: () => void;
 }
 
 type SortKey = 'ticker' | 'name' | 'value' | 'category' | 'price' | 'dayChange' | 'weight';
@@ -31,7 +34,9 @@ function SortIcon({ sortKey, sortOrder, columnKey }: { sortKey: SortKey; sortOrd
   return sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 text-violet-400" /> : <ChevronDown className="w-4 h-4 text-violet-400" />;
 }
 
-export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
+export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTableProps) {
+  const { status } = useSession();
+  const isAuthenticated = status === 'authenticated';
   const [sortKey, setSortKey] = useState<SortKey>('value');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,6 +45,39 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
   const [vsData, setVsData] = useState<Record<string, VsBenchmarkResult>>({});
   const [vsLoading, setVsLoading] = useState(false);
   const { isVisible } = useVisibility();
+  const [editingHolding, setEditingHolding] = useState<HoldingWithPrice | null>(null);
+
+  // Get existing categories for the edit modal
+  const existingCategories = useMemo(() => {
+    return Array.from(new Set(holdings.map((h) => h.category)));
+  }, [holdings]);
+
+  const handleEditSave = async (
+    ticker: string,
+    updates: { shares?: number; costBasis?: number; category?: string; notes?: string }
+  ) => {
+    const res = await fetch(`/api/user/holdings/${ticker}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || 'Failed to update holding');
+    }
+    onRefresh?.();
+  };
+
+  const handleEditDelete = async (ticker: string) => {
+    const res = await fetch(`/api/user/holdings/${ticker}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || 'Failed to delete holding');
+    }
+    onRefresh?.();
+  };
 
   useEffect(() => {
     const tickers = holdings.map((h) => h.ticker);
@@ -338,12 +376,23 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
                       </div>
                     </td>
                     <td className="p-4">
-                      <Link 
-                        href={`/holdings/${holding.ticker}`}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-500/20 rounded-lg inline-flex"
-                      >
-                        <ArrowUpRight className="w-4 h-4 text-violet-400" />
-                      </Link>
+                      <div className="flex items-center gap-1">
+                        {isAuthenticated && (
+                          <button
+                            onClick={() => setEditingHolding(holding)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-500/20 rounded-lg"
+                            title="Edit holding"
+                          >
+                            <Pencil className="w-4 h-4 text-slate-400 hover:text-violet-400" />
+                          </button>
+                        )}
+                        <Link
+                          href={`/holdings/${holding.ticker}`}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-500/20 rounded-lg inline-flex"
+                        >
+                          <ArrowUpRight className="w-4 h-4 text-violet-400" />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -362,6 +411,22 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
           </span>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {editingHolding && (
+        <EditHoldingModal
+          ticker={editingHolding.ticker}
+          name={editingHolding.name}
+          shares={editingHolding.shares}
+          costBasis={undefined}
+          category={editingHolding.category}
+          logoDomain={editingHolding.logoDomain}
+          existingCategories={[...DEFAULT_CATEGORIES, ...existingCategories]}
+          onSave={(updates) => handleEditSave(editingHolding.ticker, updates)}
+          onDelete={() => handleEditDelete(editingHolding.ticker)}
+          onClose={() => setEditingHolding(null)}
+        />
+      )}
     </div>
   );
 }

@@ -1,8 +1,28 @@
-import { DEFAULT_CATEGORIES } from '@/types/portfolio';
+import { DEFAULT_CATEGORIES, GICS_SECTORS, THEMATIC_CATEGORIES } from '@/types/portfolio';
+
+/**
+ * Map Yahoo Finance sector names to GICS standard sectors.
+ * Yahoo uses different naming conventions than Bloomberg GICS.
+ */
+const YAHOO_TO_GICS: Record<string, string> = {
+  // Direct mappings (Yahoo → GICS)
+  'Technology': 'Information Technology',
+  'Financial Services': 'Financials',
+  'Healthcare': 'Health Care',
+  'Consumer Cyclical': 'Consumer Discretionary',
+  'Consumer Defensive': 'Consumer Staples',
+  'Basic Materials': 'Materials',
+  // These match directly
+  'Energy': 'Energy',
+  'Industrials': 'Industrials',
+  'Communication Services': 'Communication Services',
+  'Utilities': 'Utilities',
+  'Real Estate': 'Real Estate',
+};
 
 /**
  * Keyword → category mapping (checked against industry string, case-insensitive).
- * Order matters: first match wins.
+ * Order matters: first match wins. Thematic categories take priority.
  */
 const INDUSTRY_KEYWORDS: [RegExp, string][] = [
   [/crypto|bitcoin|blockchain|digital.?currency|digital.?asset/i, 'Crypto Infrastructure'],
@@ -17,17 +37,19 @@ const INDUSTRY_KEYWORDS: [RegExp, string][] = [
 /**
  * Resolve a category from Yahoo Finance sector + industry.
  *
- * 1. Check industry keywords → thematic category
+ * Priority order:
+ * 1. Check industry keywords → thematic category (crypto, space, defense, AI, etc.)
  * 2. If Yahoo sector already exists in existingCategories → reuse it
- * 3. If sector is generic, try to build a more descriptive name from industry
- * 4. Fall back to Yahoo sector directly (e.g. "Healthcare", "Energy")
+ * 3. Map Yahoo sector → GICS sector (never return "Other" for valid sectors)
+ * 4. For Technology/Financial Services, try descriptive name from industry
+ * 5. Fall back to GICS sector
  */
 export function resolveCategory(
   sector: string | undefined,
   industry: string | undefined,
   existingCategories: string[] = []
 ): string {
-  // 1. Check industry keyword matches
+  // 1. Check industry keyword matches → thematic category
   if (industry) {
     for (const [pattern, category] of INDUSTRY_KEYWORDS) {
       if (pattern.test(industry)) {
@@ -41,20 +63,36 @@ export function resolveCategory(
     return sector;
   }
 
-  // Also check DEFAULT_CATEGORIES
-  if (sector && DEFAULT_CATEGORIES.includes(sector)) {
+  // Also check if sector is already a thematic or GICS category
+  if (sector && THEMATIC_CATEGORIES.includes(sector)) {
+    return sector;
+  }
+  if (sector && GICS_SECTORS.includes(sector)) {
     return sector;
   }
 
-  // 3. For generic sectors, try to derive from industry
-  const genericSectors = ['Technology', 'Financial Services', 'Communication Services', 'Industrials'];
-  if (sector && genericSectors.includes(sector) && industry) {
-    // Create a more descriptive category from industry
+  // 3. Map Yahoo sector → GICS sector
+  if (sector && YAHOO_TO_GICS[sector]) {
+    const gicsSector = YAHOO_TO_GICS[sector];
+
+    // 4. For generic tech/financial sectors, try descriptive name from industry first
+    const genericSectors = ['Technology', 'Financial Services', 'Communication Services'];
+    if (genericSectors.includes(sector) && industry) {
+      const descriptive = prettifyIndustry(industry);
+      if (descriptive) return descriptive;
+    }
+
+    // Return the GICS sector
+    return gicsSector;
+  }
+
+  // 5. Try to derive from industry if sector unknown
+  if (industry) {
     const descriptive = prettifyIndustry(industry);
     if (descriptive) return descriptive;
   }
 
-  // 4. Fall back to Yahoo sector as-is
+  // 6. Fall back to Yahoo sector as-is if it's a valid string
   if (sector) return sector;
 
   // Ultimate fallback

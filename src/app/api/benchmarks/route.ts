@@ -37,10 +37,10 @@ export async function GET(request: Request) {
       case '1Y':
         benchmarkStartDate = new Date(new Date().setFullYear(endDate.getFullYear() - 1));
         break;
-      case 'ALL':
+      case '5Y':
       default:
-        // Show 2 years of benchmark history for context
-        benchmarkStartDate = new Date(new Date().setFullYear(endDate.getFullYear() - 2));
+        // Show 5 years of benchmark history
+        benchmarkStartDate = new Date(new Date().setFullYear(endDate.getFullYear() - 5));
     }
     
     // Fetch benchmark data in parallel - always with full history for context

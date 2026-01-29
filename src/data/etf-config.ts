@@ -73,7 +73,7 @@ export const rangeLabels: Record<string, string> = {
   '6M': 'Past 6 months',
   'YTD': 'Year to date',
   '1Y': 'Past year',
-  'ALL': 'Since inception',
+  '5Y': 'Past 5 years',
 };
 
 // Calculate ETF price based on weighted returns since inception

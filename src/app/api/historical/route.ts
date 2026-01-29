@@ -13,7 +13,7 @@ const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const range = (searchParams.get('range') || 'ALL') as TimeRange;
+    const range = (searchParams.get('range') || '5Y') as TimeRange;
     
     const now = Date.now();
     const cacheKey = range;

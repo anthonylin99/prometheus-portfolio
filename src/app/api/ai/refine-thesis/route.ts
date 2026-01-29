@@ -75,8 +75,8 @@ Deliver the full revised report.`,
     if (isRedisAvailable() && redis) {
       try {
         await redis.set(key, analysis);
-      } catch {
-        /* non-fatal */
+      } catch (err) {
+        console.warn(`[refine-thesis] Redis SET failed for ${key}:`, err);
       }
     }
 

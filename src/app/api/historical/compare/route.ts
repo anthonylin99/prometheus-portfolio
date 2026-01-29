@@ -20,9 +20,9 @@ function getStartDateForRange(range: TimeRange): Date {
       return new Date(now.getFullYear(), 0, 1);
     case '1Y':
       return new Date(new Date().setFullYear(now.getFullYear() - 1));
-    case 'ALL':
+    case '5Y':
     default:
-      return new Date(new Date().setFullYear(now.getFullYear() - 2));
+      return new Date(new Date().setFullYear(now.getFullYear() - 5));
   }
 }
 

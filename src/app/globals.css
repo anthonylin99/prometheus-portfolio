@@ -2,33 +2,44 @@
 @import "tailwindcss";
 
 :root {
-  /* Core Colors */
-  --bg-primary: #050510;
-  --bg-secondary: #0a0a1a;
-  --bg-tertiary: #12122a;
-  --bg-card: rgba(15, 15, 35, 0.6);
-  --bg-card-hover: rgba(20, 20, 45, 0.8);
-  
-  /* Accent Colors */
-  --accent-primary: #8b5cf6;
-  --accent-secondary: #6366f1;
-  --accent-cyan: #22d3ee;
-  --accent-positive: #34d399;
-  --accent-negative: #f87171;
-  
-  /* Text Colors */
-  --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  
-  /* Borders */
-  --border-primary: rgba(139, 92, 246, 0.2);
-  --border-secondary: rgba(100, 116, 139, 0.2);
-  
+  /* Core Colors - Yankee Candle Lavender Theme */
+  --bg-primary: #08070f;
+  --bg-secondary: #0d0b18;
+  --bg-tertiary: #141022;
+  --bg-card: rgba(18, 14, 30, 0.7);
+  --bg-card-hover: rgba(25, 20, 42, 0.85);
+
+  /* Lavender Accent Colors */
+  --accent-primary: #9b8ac4;      /* Soft lavender */
+  --accent-secondary: #7c6baa;    /* Dusty purple */
+  --accent-tertiary: #b8a8d9;     /* Light lavender */
+  --accent-muted: #6b5a8e;        /* Muted purple */
+  --accent-rose: #c4a8b8;         /* Dusty rose complement */
+  --accent-cyan: #a8c4d9;         /* Muted cyan for compatibility */
+  --accent-positive: #7bc4a8;     /* Muted sage green */
+  --accent-negative: #c48a8a;     /* Muted rose red */
+
+  /* Text Colors - Warmer Whites */
+  --text-primary: #f5f3fa;
+  --text-secondary: #a8a0b8;
+  --text-muted: #706880;
+
+  /* Borders & Glows */
+  --border-primary: rgba(155, 138, 196, 0.2);
+  --border-secondary: rgba(112, 104, 128, 0.2);
+
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-  --gradient-bg: linear-gradient(180deg, #050510 0%, #0a0a1a 50%, #12122a 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 60%);
+  --gradient-primary: linear-gradient(135deg, #7c6baa 0%, #9b8ac4 50%, #b8a8d9 100%);
+  --gradient-bg: linear-gradient(180deg, #08070f 0%, #0d0b18 50%, #141022 100%);
+  --gradient-glow: radial-gradient(ellipse at 50% 0%, rgba(155, 138, 196, 0.12) 0%, transparent 60%);
+
+  /* Luma Design Tokens - Updated for Lavender */
+  --luma-bg-dark: #08070f;
+  --luma-border-dark: #1a1626;
+  --luma-blue: #b8a8d9;
+  --luma-blue-gradient: #9b8ac4;
+  --grid-gap: 1rem;
+  --grid-max-width: 1200px;
 }
 
 @theme inline {
@@ -58,9 +69,9 @@ body {
 
 /* Background Effects */
 .bg-gradient-radial {
-  background: radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-              radial-gradient(ellipse at 0% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
-              radial-gradient(ellipse at 100% 50%, rgba(34, 211, 238, 0.05) 0%, transparent 40%),
+  background: radial-gradient(ellipse at 50% 0%, rgba(155, 138, 196, 0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 0% 50%, rgba(124, 107, 170, 0.05) 0%, transparent 40%),
+              radial-gradient(ellipse at 100% 50%, rgba(196, 168, 184, 0.04) 0%, transparent 40%),
               var(--bg-primary);
 }
 
@@ -76,19 +87,64 @@ body {
 
 .glass-card:hover {
   background: var(--bg-card-hover);
-  border-color: rgba(139, 92, 246, 0.4);
-  box-shadow: 0 0 40px rgba(139, 92, 246, 0.1);
+  border-color: rgba(155, 138, 196, 0.4);
+  box-shadow: 0 0 40px rgba(155, 138, 196, 0.1);
+}
+
+/* Luma Card - Inspired by lu.ma design */
+.luma-card {
+  background: rgba(15, 15, 35, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s ease;
+}
+
+.luma-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Luma Typography */
+.luma-heading {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.luma-body {
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.luma-mono {
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Luma Micro-interactions */
+.luma-button {
+  transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.luma-button:active {
+  transform: scale(0.96);
+}
+
+.luma-hover:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Glow Effects */
 .glow-text {
-  text-shadow: 0 0 20px rgba(139, 92, 246, 0.5),
-               0 0 40px rgba(139, 92, 246, 0.3);
+  text-shadow: 0 0 20px rgba(155, 138, 196, 0.5),
+               0 0 40px rgba(155, 138, 196, 0.3);
 }
 
 .glow-box {
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.15),
-              inset 0 0 30px rgba(139, 92, 246, 0.05);
+  box-shadow: 0 0 30px rgba(155, 138, 196, 0.15),
+              inset 0 0 30px rgba(155, 138, 196, 0.05);
 }
 
 /* Animated Background Orbs */
@@ -103,7 +159,7 @@ body {
 .bg-orb-1 {
   width: 600px;
   height: 600px;
-  background: rgba(139, 92, 246, 0.4);
+  background: rgba(155, 138, 196, 0.35);
   top: -200px;
   left: -200px;
   animation-delay: 0s;
@@ -112,7 +168,7 @@ body {
 .bg-orb-2 {
   width: 400px;
   height: 400px;
-  background: rgba(99, 102, 241, 0.3);
+  background: rgba(124, 107, 170, 0.25);
   top: 50%;
   right: -150px;
   animation-delay: -7s;
@@ -121,7 +177,7 @@ body {
 .bg-orb-3 {
   width: 500px;
   height: 500px;
-  background: rgba(34, 211, 238, 0.2);
+  background: rgba(196, 168, 184, 0.18);
   bottom: -200px;
   left: 30%;
   animation-delay: -14s;
@@ -150,7 +206,7 @@ body {
   inset: 0;
   padding: 1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(99, 102, 241, 0.2), rgba(34, 211, 238, 0.3));
+  background: linear-gradient(135deg, rgba(155, 138, 196, 0.5), rgba(124, 107, 170, 0.2), rgba(196, 168, 184, 0.3));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;

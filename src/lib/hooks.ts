@@ -127,7 +127,7 @@ interface HistoricalDataHook {
   setRange: (range: TimeRange) => void;
 }
 
-export function useHistoricalData(initialRange: TimeRange = 'ALL'): HistoricalDataHook {
+export function useHistoricalData(initialRange: TimeRange = '5Y'): HistoricalDataHook {
   const [data, setData] = useState<HistoricalDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -408,6 +408,7 @@ export function useCircle() {
   const [circle, setCircle] = useState<CircleData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     async function fetchCircle() {
@@ -424,9 +425,13 @@ export function useCircle() {
       }
     }
     fetchCircle();
+  }, [refreshKey]);
+
+  const refresh = useCallback(() => {
+    setRefreshKey((k) => k + 1);
   }, []);
 
-  return { circle, loading, error };
+  return { circle, loading, error, refresh };
 }
 
 // Leaderboard data
@@ -536,4 +541,69 @@ export function useUserProfile() {
   }, []);
 
   return { profile, loading };
+}
+
+// Aggregated portfolio (combined view)
+export type PortfolioView = 'personal' | 'public' | 'combined';
+
+export function useAggregatedPortfolio(view: PortfolioView): PortfolioData {
+  const [holdings, setHoldings] = useState<HoldingWithPrice[]>([]);
+  const [summary, setSummary] = useState<PortfolioSummary>({
+    totalValue: 0,
+    previousValue: 0,
+    dayChange: 0,
+    dayChangePercent: 0,
+    holdingsCount: 0,
+    categoriesCount: 0,
+    lastUpdated: new Date().toISOString(),
+  });
+  const [categories, setCategories] = useState<CategoryData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      let sources: string;
+      if (view === 'combined') {
+        sources = 'personal,public';
+      } else {
+        sources = view;
+      }
+
+      const response = await fetch(`/api/user/portfolio/aggregate?sources=${sources}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch aggregated portfolio');
+      }
+
+      const data = await response.json();
+      setHoldings(data.holdings || []);
+      setSummary(data.summary || {
+        totalValue: 0,
+        previousValue: 0,
+        dayChange: 0,
+        dayChangePercent: 0,
+        holdingsCount: 0,
+        categoriesCount: 0,
+        lastUpdated: new Date().toISOString(),
+      });
+      setCategories(data.categories || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  }, [view]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refresh = useCallback(async () => {
+    await fetchData();
+  }, [fetchData]);
+
+  return { holdings, summary, categories, loading, error, refresh };
 }

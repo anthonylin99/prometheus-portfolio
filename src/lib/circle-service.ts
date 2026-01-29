@@ -66,6 +66,14 @@ export async function getCircleByInviteCode(
   return getCircle(circleId);
 }
 
+export async function getCircleByUserId(
+  userId: string
+): Promise<Circle | null> {
+  const user = await getAppUser(userId);
+  if (!user?.circleId) return null;
+  return getCircle(user.circleId);
+}
+
 export async function joinCircle(
   userId: string,
   inviteCode: string

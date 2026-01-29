@@ -18,6 +18,7 @@ export interface UserHolding {
   exchange?: string;
   logoDomain?: string;
   addedAt: string;
+  notes?: string;
 }
 
 export interface UserPortfolio {
@@ -69,7 +70,10 @@ export async function removeUserHolding(
   ticker: string
 ): Promise<void> {
   const portfolio = await getUserPortfolio(userId);
-  portfolio.holdings = portfolio.holdings.filter((h) => h.ticker !== ticker);
+  const normalizedTicker = ticker.toUpperCase().trim();
+  portfolio.holdings = portfolio.holdings.filter(
+    (h) => h.ticker.toUpperCase() !== normalizedTicker
+  );
   await setUserPortfolio(userId, portfolio);
 }
 
@@ -79,7 +83,10 @@ export async function updateUserHolding(
   updates: Partial<UserHolding>
 ): Promise<void> {
   const portfolio = await getUserPortfolio(userId);
-  const index = portfolio.holdings.findIndex((h) => h.ticker === ticker);
+  const normalizedTicker = ticker.toUpperCase().trim();
+  const index = portfolio.holdings.findIndex(
+    (h) => h.ticker.toUpperCase() === normalizedTicker
+  );
   if (index < 0) {
     throw new Error(`Holding ${ticker} not found`);
   }
