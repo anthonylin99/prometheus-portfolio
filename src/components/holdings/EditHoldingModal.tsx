@@ -177,7 +177,7 @@ export function EditHoldingModal({
               onChange={(e) => setShares(e.target.value)}
               min="0.01"
               step="any"
-              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50"
+              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50"
             />
           </div>
 
@@ -193,7 +193,7 @@ export function EditHoldingModal({
               placeholder="Optional"
               min="0"
               step="any"
-              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50"
+              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50"
             />
           </div>
 
@@ -213,7 +213,7 @@ export function EditHoldingModal({
                 }}
                 onFocus={() => setShowCategoryDropdown(true)}
                 placeholder="Select or type a category"
-                className="w-full px-4 py-3 pr-10 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50"
+                className="w-full px-4 py-3 pr-10 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50"
               />
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 pointer-events-none" />
 
@@ -250,7 +250,7 @@ export function EditHoldingModal({
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Optional notes about this position..."
               rows={3}
-              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 resize-none"
+              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 resize-none"
             />
           </div>
 
@@ -307,7 +307,7 @@ export function EditHoldingModal({
             <button
               onClick={handleSave}
               disabled={saving || showDeleteConfirm}
-              className="flex-1 py-3 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {saving ? (
                 <>

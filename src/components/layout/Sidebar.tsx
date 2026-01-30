@@ -180,7 +180,7 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
                   isActive
-                    ? "bg-gradient-to-r from-violet-500/20 to-purple-500/10 text-white border border-violet-500/30"
+                    ? "bg-gradient-to-r from-violet-400/20 to-purple-500/10 text-white border border-violet-400/30"
                     : "text-slate-400 hover:text-white hover:bg-white/5"
                 )}
               >
@@ -212,7 +212,7 @@ export function Sidebar() {
             <Link
               href="/login"
               onClick={() => setIsOpen(false)}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 mb-3 rounded-lg bg-violet-600/20 hover:bg-violet-600/30 border border-violet-500/30 text-violet-300 hover:text-white transition-colors text-sm"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 mb-3 rounded-lg bg-violet-400/20 hover:bg-violet-400/30 border border-violet-400/30 text-violet-300 hover:text-white transition-colors text-sm"
             >
               <LogIn className="w-4 h-4" />
               <span>Sign In</span>
@@ -243,7 +243,7 @@ export function Sidebar() {
               {isAuthenticated && session?.user ? (
                 // Owner gets the profile picture, others get initial
                 session.user.email?.toLowerCase() === 'anthonylin99@gmail.com' ? (
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-500/30 flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-400/30 flex-shrink-0">
                     <Image
                       src="/profile.png"
                       alt="Anthony"
@@ -253,14 +253,14 @@ export function Sidebar() {
                     />
                   </div>
                 ) : (
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 border-2 border-violet-500/30"
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 border-2 border-violet-400/30"
                     style={{ backgroundColor: '#8b5cf6' }}
                   >
                     {(session.user.name || session.user.email || '?').charAt(0).toUpperCase()}
                   </div>
                 )
               ) : (
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-500/30 flex-shrink-0">
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-400/30 flex-shrink-0">
                   <Image
                     src="/profile.png"
                     alt="Profile"

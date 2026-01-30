@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Header } from '@/components/layout/Header';
 import { DispersionChart, DispersionChartHeader } from '@/components/charts/DispersionChart';
 import { SMAData, SMAPeriod, SMA_PERIODS } from '@/types/sma';
 import { cn } from '@/lib/utils';
 import { TrendingDown, Loader2, RefreshCw, BarChart3, ChevronDown, Briefcase } from 'lucide-react';
-import { useCircle } from '@/lib/hooks';
+import { useCircle, useUserPortfolio } from '@/lib/hooks';
 
 type DataSource = 'portfolio' | 'watchlist';
 type PortfolioType = 'personal' | 'sample' | 'friend';
@@ -49,6 +49,38 @@ export default function DipFinderPage() {
   const [circleMemberNames, setCircleMemberNames] = useState<Record<string, string>>({});
 
   const { circle } = useCircle();
+  const { refresh: refreshPortfolio } = useUserPortfolio();
+
+  // Handler to add a ticker to the user's portfolio
+  const handleAddToPortfolio = useCallback(async (ticker: string) => {
+    const res = await fetch('/api/holdings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ticker,
+        shares: 0, // User can edit later
+        costBasis: 0, // Will use current price
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to add to portfolio');
+    }
+    refreshPortfolio();
+  }, [refreshPortfolio]);
+
+  // Handler to add a ticker to the user's watchlist
+  const handleAddToWatchlist = useCallback(async (ticker: string) => {
+    const res = await fetch('/api/watchlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ticker }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to add to watchlist');
+    }
+  }, []);
 
   // Fetch circle member names
   useEffect(() => {
@@ -242,7 +274,7 @@ export default function DipFinderPage() {
       {/* Loading State */}
       {loading && (
         <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="w-10 h-10 text-violet-500 animate-spin mb-4" />
+          <Loader2 className="w-10 h-10 text-violet-400 animate-spin mb-4" />
           <p className="text-slate-400">Calculating SMA deviation...</p>
         </div>
       )}
@@ -253,7 +285,7 @@ export default function DipFinderPage() {
           <p className="text-red-400 mb-4">{error}</p>
           <button
             onClick={fetchSMAData}
-            className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition-colors"
+            className="px-4 py-2 bg-violet-400 text-white rounded-lg hover:bg-violet-400 transition-colors"
           >
             Retry
           </button>
@@ -263,7 +295,7 @@ export default function DipFinderPage() {
       {/* Empty State */}
       {!loading && !error && data.length === 0 && (
         <div className="glass-card p-10 rounded-2xl text-center max-w-md mx-auto">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-violet-500/20 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-violet-400/20 flex items-center justify-center">
             <BarChart3 className="w-8 h-8 text-violet-400" />
           </div>
           <h2 className="text-xl font-bold text-white mb-2">
@@ -315,7 +347,12 @@ export default function DipFinderPage() {
                 </span>
               </div>
               <DispersionChartHeader maxDeviation={maxDeviation} />
-              <DispersionChart data={dips} maxDeviation={maxDeviation} />
+              <DispersionChart
+                data={dips}
+                maxDeviation={maxDeviation}
+                onAddToPortfolio={handleAddToPortfolio}
+                onAddToWatchlist={handleAddToWatchlist}
+              />
             </div>
           )}
 
@@ -332,7 +369,12 @@ export default function DipFinderPage() {
                 </span>
               </div>
               <DispersionChartHeader maxDeviation={maxDeviation} />
-              <DispersionChart data={gains} maxDeviation={maxDeviation} />
+              <DispersionChart
+                data={gains}
+                maxDeviation={maxDeviation}
+                onAddToPortfolio={handleAddToPortfolio}
+                onAddToWatchlist={handleAddToWatchlist}
+              />
             </div>
           )}
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import { Header } from '@/components/layout/Header';
 import { HealthScoreCard } from '@/components/insights/HealthScoreCard';
@@ -27,11 +27,25 @@ export default function InsightsPage() {
   const [error, setError] = useState<string | null>(null);
   const [holdingsCount, setHoldingsCount] = useState(0);
 
-  const fetchInsights = async () => {
+  // AbortController ref for cleanup and manual refresh abort
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const fetchInsights = useCallback(async () => {
+    // Abort any in-flight request before starting a new one
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create new AbortController for this request
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/insights/portfolio');
+      const res = await fetch('/api/insights/portfolio', {
+        signal: controller.signal,
+      });
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(errData.error || 'Failed to fetch insights');
@@ -40,17 +54,31 @@ export default function InsightsPage() {
       setInsights(data.insights);
       setHoldingsCount(data.holdingsCount);
     } catch (err) {
+      // Ignore abort errors - they're expected during cleanup/refresh
+      if (err instanceof Error && err.name === 'AbortError') {
+        return;
+      }
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
-      setLoading(false);
+      // Only update loading if this request wasn't aborted
+      if (!controller.signal.aborted) {
+        setLoading(false);
+      }
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchInsights();
     }
-  }, [isAuthenticated]);
+
+    // Cleanup: abort any in-flight request when unmounting or re-running effect
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [isAuthenticated, fetchInsights]);
 
   if (isLoading) {
     return (

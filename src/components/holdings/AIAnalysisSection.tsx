@@ -192,7 +192,7 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
               disabled={!thesisData}
               className={cn(
                 'inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
-                thesisData ? 'bg-violet-600 text-white hover:bg-violet-500' : 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                thesisData ? 'bg-violet-400 text-white hover:bg-violet-400' : 'bg-slate-700 text-slate-400 cursor-not-allowed'
               )}
             >
               <Sparkles className="w-4 h-4" />

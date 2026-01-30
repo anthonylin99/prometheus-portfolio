@@ -1,0 +1,287 @@
+================================================================================
+PROMETHEUS ETF - COMPLETE UI OVERHAUL CHANGELOG
+Date: January 29, 2026
+================================================================================
+
+OVERVIEW
+--------
+This update addresses three major areas:
+1. Insights Page Crash Fixes - 4 critical bugs causing browser crashes
+2. Lavender Color Scheme Overhaul - Dark purple -> Lavender purple gradient
+3. Button Audit & Fixes - Portfolio toggle transparency + Dip Finder UX
+
+Design Philosophy: The lavender palette (violet-400 / #A78BFA) provides a softer,
+more refined appearance while maintaining the premium Stripe-inspired aesthetic.
+
+================================================================================
+PHASE 1: INSIGHTS PAGE CRASH FIXES (CRITICAL)
+================================================================================
+
+1.1 AbortController in insights/page.tsx
+-----------------------------------------
+File Modified: src/app/insights/page.tsx
+
+Changes:
+- Added `useCallback` and `useRef` imports
+- Created `abortControllerRef` to track in-flight requests
+- Wrapped `fetchInsights` in `useCallback` for memoization
+- Added AbortController to cancel in-flight requests on:
+  - Component unmount
+  - Rapid refresh clicks
+  - Navigation away from page
+- Gracefully ignores `AbortError` exceptions
+
+Why: Prevents memory leaks and crashes when users rapidly click refresh or
+navigate away while data is loading.
+
+
+1.2 Timeout + Concurrency in API Route
+--------------------------------------
+File Modified: src/app/api/insights/portfolio/route.ts
+
+Changes:
+- Reduced historical data range from 6 months to 3 months (performance)
+- Added `withTimeout` helper with 8-second timeout per ticker
+- Implemented batch processing with CONCURRENCY_LIMIT = 3
+- Added null checks for `Math.max`/`Math.min` on empty arrays:
+  ```typescript
+  const fiftyTwoWeekHigh = quoteData?.fiftyTwoWeekHigh || (highs.length > 0 ? Math.max(...highs) : 0);
+  ```
+
+Why: Prevents runaway API calls from crashing the browser tab when analyzing
+many holdings simultaneously.
+
+
+1.3 State Initialization in TechnicalMetrics
+--------------------------------------------
+File Modified: src/components/insights/TechnicalMetrics.tsx
+
+Changes:
+- Changed `selectedTicker` initialization from `signals[0].ticker` to `null`
+- Added `useEffect` to sync `selectedTicker` when signals change
+- Validation check before updating to prevent infinite loops:
+  ```typescript
+  const isValidSelection = selectedTicker && signals.some(s => s.ticker === selectedTicker);
+  if (!isValidSelection) {
+    setSelectedTicker(signals[0].ticker);
+  }
+  ```
+
+Why: Prevents infinite re-render loop when signals array changes during refresh.
+
+
+1.4 Image Loading Timeout in CompanyLogo
+----------------------------------------
+File Modified: src/components/ui/CompanyLogo.tsx
+
+Changes:
+- Added `useEffect` and `useRef` imports
+- Added `LOGO_TIMEOUT_MS = 3000` constant
+- Added `isLoading` state tracking
+- Added `timeoutRef` to manage cleanup
+- Reset state on ticker/domain change
+- Clear timeout on successful load via `onLoad` handler
+
+Why: Prevents hanging UI when company logos fail to load from external CDNs.
+
+
+================================================================================
+PHASE 2: LAVENDER COLOR SCHEME OVERHAUL
+================================================================================
+
+2.1 CSS Custom Properties (globals.css)
+---------------------------------------
+File Modified: src/app/globals.css
+
+Color Mapping:
+| Variable          | Old Value                  | New Value                  |
+|-------------------|----------------------------|----------------------------|
+| --stripe-purple   | #635bff                    | #A78BFA (violet-400)       |
+| --stripe-violet   | #7c3aed                    | #C4B5FD (violet-300)       |
+| --accent-primary  | #635bff                    | #A78BFA                    |
+| --accent-secondary| #7c3aed                    | #C4B5FD                    |
+| --accent-glow     | rgba(99,91,255,0.5)        | rgba(167,139,250,0.5)      |
+| --card-border     | rgba(99,91,255,0.15)       | rgba(167,139,250,0.15)     |
+| --card-border-hover| rgba(99,91,255,0.35)      | rgba(167,139,250,0.35)     |
+
+All rgba(99, 91, 255, X) -> rgba(167, 139, 250, X)
+All rgba(124, 58, 237, X) -> rgba(196, 181, 253, X)
+
+
+2.2 Hardcoded Hex Values (~10 files)
+------------------------------------
+Files Modified:
+- src/components/ui/ThemeSettings.tsx
+- src/lib/theme-context.tsx
+- src/app/dashboard/page.tsx
+- src/components/layout/Header.tsx
+- src/components/cards/TopHoldingCard.tsx
+- src/components/cards/StatCard.tsx
+- src/components/landing/LandingSections.tsx
+- src/components/landing/LandingHero.tsx
+- src/data/etf-config.ts
+
+Replacements:
+- #635bff -> #A78BFA
+- #7c3aed -> #C4B5FD
+- #684FF8 -> #A78BFA
+
+
+2.3 Tailwind Classes (~40 files)
+--------------------------------
+Global search/replace across src/ directory:
+
+- violet-600 -> violet-400
+- violet-500 -> violet-400
+- purple-600 -> violet-400
+- from-violet-600 -> from-violet-400
+- to-purple-600 -> to-violet-400
+
+Files with manual updates:
+- src/types/portfolio.ts (comment update)
+- src/components/collections/CollectionCard.tsx (border-l-violet-500 -> border-l-violet-400)
+- src/components/holdings/StockAnalysisPanel.tsx (border-l-violet-500 -> border-l-violet-400)
+
+
+================================================================================
+PHASE 3: BUTTON FIXES
+================================================================================
+
+3.1 Portfolio Toggle Transparency Fix
+-------------------------------------
+File Modified: src/components/portfolio/PortfolioSelector.tsx
+
+Before:
+```tsx
+? 'bg-violet-600 text-white'
+: 'bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-700/50'
+```
+
+After:
+```tsx
+? 'bg-violet-400 text-white'
+: 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+```
+
+Why: Removed transparency (/50) from inactive state for better visibility.
+Updated active state to use lavender (violet-400).
+
+
+3.2 Dip Finder Quick-Add UX Enhancement
+---------------------------------------
+Files Modified:
+- src/components/charts/DispersionChart.tsx
+- src/app/dip-finder/page.tsx
+
+DispersionChart Changes:
+- Added new props: `onAddToPortfolio`, `onAddToWatchlist`
+- Added ActionState type: 'idle' | 'loading' | 'success'
+- Added quick-add buttons that appear on hover:
+  - Purple "+" button: Add to Portfolio
+  - Amber eye button: Add to Watchlist
+- Buttons show loading spinner during API call
+- Buttons show checkmark on success (resets after 2s)
+
+Dip Finder Page Changes:
+- Added `useUserPortfolio` hook import
+- Added `handleAddToPortfolio` callback (POST to /api/holdings)
+- Added `handleAddToWatchlist` callback (POST to /api/watchlist)
+- Passed handlers to both DispersionChart instances (dips and gains)
+
+
+================================================================================
+BUILD VERIFICATION
+================================================================================
+
+TypeScript Check: PASSED
+  $ npx tsc --noEmit
+  (no errors)
+
+Next.js Build: PASSED
+  $ npm run build
+  (all pages compiled successfully)
+
+
+================================================================================
+DEPENDENCIES
+================================================================================
+
+No new dependencies were added. All changes use native browser/React APIs:
+- AbortController (native)
+- useCallback, useEffect, useRef (React)
+- Promise.race (JavaScript)
+
+
+================================================================================
+TESTING RECOMMENDATIONS
+================================================================================
+
+Phase 1 (Crash Fixes):
+1. Navigate to Insights page
+2. Click Refresh rapidly 5+ times
+3. Navigate away and back quickly
+4. Check Chrome DevTools Memory tab for leaks
+5. Test on slower network connection (throttle to 3G)
+
+Phase 2 (Color Overhaul):
+1. Visual inspection of all pages:
+   - Dashboard (/dashboard)
+   - Holdings (/holdings)
+   - Dip Finder (/dip-finder)
+   - Insights (/insights)
+   - Circle (/circle)
+   - ETF (/etf)
+   - Landing page (/)
+2. Verify all purple elements are now lavender
+3. Check gradients, borders, glows, and hovers
+
+Phase 3 (Button Fixes):
+1. Test Portfolio Selector toggle on Dashboard
+2. Verify buttons are visible (no transparency issue)
+3. Test Dip Finder quick-add:
+   - Hover over a stock bar
+   - Click "+" to add to portfolio
+   - Click eye icon to add to watchlist
+   - Verify loading and success states
+
+
+================================================================================
+KNOWN LIMITATIONS
+================================================================================
+
+1. CompanyLogo timeout (3s) may be too aggressive for slow connections
+2. Dip Finder quick-add sets shares=0, user must edit later
+3. Theme context still sets dynamic CSS vars (may override globals.css)
+
+
+================================================================================
+FILES CHANGED SUMMARY
+================================================================================
+
+Critical Fixes:
+- src/app/insights/page.tsx
+- src/app/api/insights/portfolio/route.ts
+- src/components/insights/TechnicalMetrics.tsx
+- src/components/ui/CompanyLogo.tsx
+
+Color Overhaul:
+- src/app/globals.css
+- src/components/ui/ThemeSettings.tsx
+- src/lib/theme-context.tsx
+- src/app/dashboard/page.tsx
+- src/components/layout/Header.tsx
+- src/components/cards/TopHoldingCard.tsx
+- src/components/cards/StatCard.tsx
+- src/components/landing/LandingSections.tsx
+- src/components/landing/LandingHero.tsx
+- src/data/etf-config.ts
+- ~40 files with Tailwind class updates
+
+Button Fixes:
+- src/components/portfolio/PortfolioSelector.tsx
+- src/components/charts/DispersionChart.tsx
+- src/app/dip-finder/page.tsx
+
+================================================================================
+END OF CHANGELOG
+================================================================================

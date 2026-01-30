@@ -67,12 +67,12 @@ export function TickerTape() {
   const displayTickers = [...tickers, ...tickers, ...tickers, ...tickers];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-black/80 via-slate-900/80 to-black/80 backdrop-blur-md border-b border-violet-500/20">
+    <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-black/80 via-slate-900/80 to-black/80 backdrop-blur-md border-b border-violet-400/20">
       <div className="relative overflow-hidden h-8">
         <div className="ticker-scroll flex items-center h-full gap-12 whitespace-nowrap">
           {loading ? (
             <div className="flex items-center gap-2 text-slate-500 text-xs px-4">
-              <div className="w-3 h-3 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+              <div className="w-3 h-3 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
               Loading market data...
             </div>
           ) : (

@@ -50,7 +50,7 @@ export default function CategoryPage() {
           <p className="text-slate-400 mb-4">Category not found</p>
           <Link
             href="/explore"
-            className="px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors inline-block"
+            className="px-4 py-2 bg-violet-400 text-white rounded-lg hover:bg-violet-400 transition-colors inline-block"
           >
             Back to Explore
           </Link>
@@ -96,7 +96,7 @@ export default function CategoryPage() {
       {/* Category Analytics */}
       {analyticsLoading ? (
         <div className="glass-card p-6 rounded-2xl mb-8 flex items-center justify-center">
-          <Loader2 className="w-6 h-6 text-violet-500 animate-spin mr-2" />
+          <Loader2 className="w-6 h-6 text-violet-400 animate-spin mr-2" />
           <span className="text-slate-400">Loading analytics...</span>
         </div>
       ) : analyticsError ? (

@@ -234,7 +234,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                 setAutoDetectedHint(null);
               }}
               placeholder="Search by ticker or company name..."
-              className="w-full pl-10 pr-10 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/25 transition-colors font-mono uppercase"
+              className="w-full pl-10 pr-10 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 focus:ring-1 focus:ring-violet-400/25 transition-colors font-mono uppercase"
             />
             {searching && (
               <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 animate-spin" />
@@ -320,7 +320,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                   placeholder="100"
                   min="0.01"
                   step="any"
-                  className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 text-sm"
+                  className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 text-sm"
                 />
               </div>
               <div>
@@ -334,7 +334,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                   placeholder="Optional"
                   min="0"
                   step="any"
-                  className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 text-sm"
+                  className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 text-sm"
                 />
               </div>
             </div>
@@ -355,7 +355,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                   }}
                   onFocus={() => setShowCategoryDropdown(true)}
                   placeholder="Select or type a category"
-                  className="w-full px-3 py-2 pr-8 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 text-sm"
+                  className="w-full px-3 py-2 pr-8 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 text-sm"
                 />
                 <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
 
@@ -390,7 +390,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
             <button
               onClick={handleAddHolding}
               disabled={!shares || Number(shares) <= 0}
-              className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               <Plus className="w-4 h-4" />
               Add to Portfolio

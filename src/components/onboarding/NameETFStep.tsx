@@ -103,7 +103,7 @@ export function NameETFStep({ data, onChange }: NameETFStepProps) {
             value={data.displayName}
             onChange={(e) => onChange({ ...data, displayName: e.target.value })}
             placeholder="Anthony"
-            className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/25 transition-colors"
+            className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 focus:ring-1 focus:ring-violet-400/25 transition-colors"
           />
         </div>
       </div>
@@ -121,7 +121,7 @@ export function NameETFStep({ data, onChange }: NameETFStepProps) {
             onChange={(e) => handleTickerChange(e.target.value)}
             placeholder="ALIN"
             maxLength={5}
-            className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/25 transition-colors uppercase tracking-wider font-mono"
+            className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 focus:ring-1 focus:ring-violet-400/25 transition-colors uppercase tracking-wider font-mono"
           />
         </div>
         {tickerError ? (
@@ -145,7 +145,7 @@ export function NameETFStep({ data, onChange }: NameETFStepProps) {
             value={data.etfName}
             onChange={(e) => onChange({ ...data, etfName: e.target.value })}
             placeholder="Prometheus ETF"
-            className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/25 transition-colors"
+            className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 focus:ring-1 focus:ring-violet-400/25 transition-colors"
           />
         </div>
       </div>

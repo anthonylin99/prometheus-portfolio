@@ -316,7 +316,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
               value={compareInput}
               onChange={(e) => setCompareInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addCompare()}
-              className="w-32 px-2.5 py-1.5 rounded-lg bg-slate-800/80 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 text-sm"
+              className="w-32 px-2.5 py-1.5 rounded-lg bg-slate-800/80 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 text-sm"
             />
             <button
               onClick={() => addCompare()}
@@ -359,7 +359,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
               onClick={() => setDisplayMode('price')}
               className={cn(
                 'px-2.5 py-1 rounded text-sm font-medium transition-all',
-                displayMode === 'price' ? 'bg-violet-600 text-white' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
+                displayMode === 'price' ? 'bg-violet-400 text-white' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
               )}
             >
               $
@@ -368,7 +368,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
               onClick={() => setDisplayMode('percent')}
               className={cn(
                 'px-2.5 py-1 rounded text-sm font-medium transition-all',
-                displayMode === 'percent' ? 'bg-violet-600 text-white' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
+                displayMode === 'percent' ? 'bg-violet-400 text-white' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
               )}
             >
               %
@@ -380,7 +380,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
                 onClick={() => setRange(r)}
                 className={cn(
                   'px-2.5 py-1 rounded text-sm font-medium transition-all',
-                  range === r ? 'bg-violet-600 text-white' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
+                  range === r ? 'bg-violet-400 text-white' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
                 )}
               >
                 {r}
@@ -418,7 +418,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
             className="absolute inset-0 flex items-center justify-center z-10"
             style={{ background: 'rgba(19,23,34,0.9)' }}
           >
-            <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
           </div>
         )}
         <div ref={containerRef} className="w-full h-[360px]" />

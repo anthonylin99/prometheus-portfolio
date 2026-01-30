@@ -268,7 +268,7 @@ export default function AdminPage() {
     return (
       <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
         <div className="glass-card p-8 rounded-2xl text-center max-w-md">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-violet-500/20 to-purple-500/10 flex items-center justify-center border border-violet-500/30">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-violet-400/20 to-purple-500/10 flex items-center justify-center border border-violet-400/30">
             <Lock className="w-10 h-10 text-violet-400" />
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">Admin Access Required</h2>
@@ -277,7 +277,7 @@ export default function AdminPage() {
           </p>
           <button
             onClick={openPINModal}
-            className="px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-xl transition-colors"
+            className="px-6 py-3 bg-violet-400 hover:bg-violet-700 text-white font-medium rounded-xl transition-colors"
           >
             Enter PIN
           </button>
@@ -303,7 +303,7 @@ export default function AdminPage() {
     return (
       <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <RefreshCw className="w-6 h-6 text-violet-500 animate-spin" />
+          <RefreshCw className="w-6 h-6 text-violet-400 animate-spin" />
           <span className="text-slate-400">Loading...</span>
         </div>
       </div>
@@ -336,7 +336,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setShowAddForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-white transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-violet-400 hover:bg-violet-700 rounded-lg text-white transition-colors"
           >
             <Plus className="w-4 h-4" />
             Add Holding
@@ -381,7 +381,7 @@ export default function AdminPage() {
                     type="text"
                     value={newHolding.ticker}
                     onChange={(e) => setNewHolding({ ...newHolding, ticker: e.target.value.toUpperCase() })}
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                     placeholder="ASTS"
                     required
                   />
@@ -392,7 +392,7 @@ export default function AdminPage() {
                     type="number"
                     value={newHolding.shares || ''}
                     onChange={(e) => setNewHolding({ ...newHolding, shares: Number(e.target.value) })}
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                     placeholder="100"
                     required
                   />
@@ -405,7 +405,7 @@ export default function AdminPage() {
                   type="text"
                   value={newHolding.name}
                   onChange={(e) => setNewHolding({ ...newHolding, name: e.target.value })}
-                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                   placeholder="AST SpaceMobile"
                   required
                 />
@@ -417,7 +417,7 @@ export default function AdminPage() {
                   <select
                     value={newHolding.category}
                     onChange={(e) => setNewHolding({ ...newHolding, category: e.target.value as Category })}
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                   >
                     {categories.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
@@ -431,7 +431,7 @@ export default function AdminPage() {
                     step="0.01"
                     value={newHolding.costBasis || ''}
                     onChange={(e) => setNewHolding({ ...newHolding, costBasis: Number(e.target.value) })}
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                     placeholder="45.50"
                   />
                 </div>
@@ -442,7 +442,7 @@ export default function AdminPage() {
                 <textarea
                   value={newHolding.description}
                   onChange={(e) => setNewHolding({ ...newHolding, description: e.target.value })}
-                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none resize-none"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none resize-none"
                   rows={3}
                   placeholder="Brief description of the company..."
                 />
@@ -459,7 +459,7 @@ export default function AdminPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 disabled:opacity-50 rounded-lg text-white transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-violet-400 hover:bg-violet-700 disabled:opacity-50 rounded-lg text-white transition-colors"
                 >
                   {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   Save Holding
@@ -517,7 +517,7 @@ export default function AdminPage() {
                   <select
                     value={newTransaction.ticker}
                     onChange={(e) => setNewTransaction({ ...newTransaction, ticker: e.target.value })}
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                     required
                   >
                     <option value="">Select...</option>
@@ -532,7 +532,7 @@ export default function AdminPage() {
                     type="number"
                     value={newTransaction.shares || ''}
                     onChange={(e) => setNewTransaction({ ...newTransaction, shares: Number(e.target.value) })}
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                     placeholder="50"
                     required
                   />
@@ -547,7 +547,7 @@ export default function AdminPage() {
                     step="0.01"
                     value={newTransaction.price || ''}
                     onChange={(e) => setNewTransaction({ ...newTransaction, price: Number(e.target.value) })}
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                     placeholder="110.00"
                     required
                   />
@@ -558,7 +558,7 @@ export default function AdminPage() {
                     type="date"
                     value={newTransaction.date}
                     onChange={(e) => setNewTransaction({ ...newTransaction, date: e.target.value })}
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                     required
                   />
                 </div>
@@ -569,7 +569,7 @@ export default function AdminPage() {
                 <select
                   value={newTransaction.brokerage}
                   onChange={(e) => setNewTransaction({ ...newTransaction, brokerage: e.target.value })}
-                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                 >
                   <option value="Fidelity">Fidelity</option>
                   <option value="Schwab">Schwab</option>
@@ -585,7 +585,7 @@ export default function AdminPage() {
                   type="text"
                   value={newTransaction.notes}
                   onChange={(e) => setNewTransaction({ ...newTransaction, notes: e.target.value })}
-                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-500 focus:outline-none"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-violet-400 focus:outline-none"
                   placeholder="Optional notes..."
                 />
               </div>
@@ -666,7 +666,7 @@ export default function AdminPage() {
                           type="number"
                           value={editShares}
                           onChange={(e) => setEditShares(Number(e.target.value))}
-                          className="w-24 px-2 py-1 bg-slate-800 border border-violet-500 rounded text-white text-right focus:outline-none"
+                          className="w-24 px-2 py-1 bg-slate-800 border border-violet-400 rounded text-white text-right focus:outline-none"
                           autoFocus
                         />
                       ) : (
@@ -680,7 +680,7 @@ export default function AdminPage() {
                           step="0.01"
                           value={editCostBasis || ''}
                           onChange={(e) => setEditCostBasis(Number(e.target.value))}
-                          className="w-24 px-2 py-1 bg-slate-800 border border-violet-500 rounded text-white text-right focus:outline-none"
+                          className="w-24 px-2 py-1 bg-slate-800 border border-violet-400 rounded text-white text-right focus:outline-none"
                           placeholder="—"
                         />
                       ) : (

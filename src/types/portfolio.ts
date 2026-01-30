@@ -52,7 +52,7 @@ const GICS_COLORS: Record<string, string> = {
   'Consumer Discretionary': '#ec4899', // pink-500
   'Consumer Staples': '#84cc16', // lime-500
   'Health Care': '#14b8a6',      // teal-500
-  'Financials': '#8b5cf6',       // violet-500
+  'Financials': '#8b5cf6',       // violet-400
   'Information Technology': '#3b82f6', // blue-500
   'Communication Services': '#f97316', // orange-500
   'Utilities': '#eab308',        // yellow-500
@@ -119,7 +119,7 @@ export const categoryGradients: Record<string, string> = {
   'Consumer Discretionary': 'from-pink-500 to-pink-400',
   'Consumer Staples': 'from-lime-500 to-lime-400',
   'Health Care': 'from-teal-500 to-teal-400',
-  'Financials': 'from-violet-500 to-violet-400',
+  'Financials': 'from-violet-400 to-violet-400',
   'Information Technology': 'from-blue-500 to-blue-400',
   'Communication Services': 'from-orange-500 to-orange-400',
   'Utilities': 'from-yellow-500 to-yellow-400',

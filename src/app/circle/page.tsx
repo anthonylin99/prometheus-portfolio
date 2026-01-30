@@ -92,7 +92,7 @@ export default function CirclePage() {
 
         <div className="max-w-md mx-auto space-y-4">
           <div className="glass-card p-8 rounded-2xl text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-violet-500/20 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-violet-400/20 flex items-center justify-center">
               <Users className="w-8 h-8 text-violet-400" />
             </div>
             <h2 className="text-xl font-bold text-white mb-2">
@@ -109,7 +109,7 @@ export default function CirclePage() {
                 className={cn(
                   'w-full flex items-center gap-4 p-4 rounded-xl border transition-all text-left',
                   mode === 'join'
-                    ? 'bg-violet-500/10 border-violet-500/40'
+                    ? 'bg-violet-400/10 border-violet-400/40'
                     : 'bg-slate-800/30 border-slate-700/30 hover:border-slate-600/50'
                 )}
               >
@@ -117,7 +117,7 @@ export default function CirclePage() {
                   className={cn(
                     'w-10 h-10 rounded-lg flex items-center justify-center',
                     mode === 'join'
-                      ? 'bg-violet-600 text-white'
+                      ? 'bg-violet-400 text-white'
                       : 'bg-slate-800 text-slate-400'
                   )}
                 >
@@ -138,7 +138,7 @@ export default function CirclePage() {
                 className={cn(
                   'w-full flex items-center gap-4 p-4 rounded-xl border transition-all text-left',
                   mode === 'create'
-                    ? 'bg-violet-500/10 border-violet-500/40'
+                    ? 'bg-violet-400/10 border-violet-400/40'
                     : 'bg-slate-800/30 border-slate-700/30 hover:border-slate-600/50'
                 )}
               >
@@ -146,7 +146,7 @@ export default function CirclePage() {
                   className={cn(
                     'w-10 h-10 rounded-lg flex items-center justify-center',
                     mode === 'create'
-                      ? 'bg-violet-600 text-white'
+                      ? 'bg-violet-400 text-white'
                       : 'bg-slate-800 text-slate-400'
                   )}
                 >
@@ -173,12 +173,12 @@ export default function CirclePage() {
                   }
                   placeholder="Enter invite code"
                   maxLength={8}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 text-center uppercase tracking-widest font-mono"
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 text-center uppercase tracking-widest font-mono"
                 />
                 <button
                   onClick={handleJoin}
                   disabled={submitting || !inviteCode.trim()}
-                  className="w-full py-3 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
+                  className="w-full py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
                 >
                   {submitting ? (
                     <Loader2 className="w-4 h-4 animate-spin mx-auto" />
@@ -196,12 +196,12 @@ export default function CirclePage() {
                   value={circleName}
                   onChange={(e) => setCircleName(e.target.value)}
                   placeholder="Circle name"
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50"
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50"
                 />
                 <button
                   onClick={handleCreate}
                   disabled={submitting || !circleName.trim()}
-                  className="w-full py-3 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
+                  className="w-full py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
                 >
                   {submitting ? (
                     <Loader2 className="w-4 h-4 animate-spin mx-auto" />

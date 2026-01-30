@@ -119,11 +119,11 @@ export default function WatchlistPage() {
           onChange={(e) => setAddInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && addTicker()}
           placeholder="Add ticker (e.g. NVDA, AAPL)"
-          className="flex-1 px-3 py-2 rounded-lg bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 text-sm"
+          className="flex-1 px-3 py-2 rounded-lg bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 text-sm"
         />
         <button
           onClick={addTicker}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-600 text-white hover:bg-violet-500 transition-colors text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-400 text-white hover:bg-violet-400 transition-colors text-sm font-medium"
         >
           <Plus className="w-4 h-4" />
           Add
@@ -133,7 +133,7 @@ export default function WatchlistPage() {
       {/* Watchlist */}
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : tickers.length === 0 ? (
         <div className="glass-card p-12 rounded-2xl text-center">
@@ -144,7 +144,7 @@ export default function WatchlistPage() {
           </p>
           <Link
             href="/explore"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors text-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-violet-400 text-white rounded-lg hover:bg-violet-400 transition-colors text-sm"
           >
             Browse Collections
           </Link>

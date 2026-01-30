@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { getLogoUrl, getTickerColor, cn } from '@/lib/utils';
 
@@ -25,9 +25,38 @@ const imageSizes = {
   lg: 48,
 };
 
+const LOGO_TIMEOUT_MS = 3000;
+
 export function CompanyLogo({ ticker, domain, size = 'md', className }: CompanyLogoProps) {
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const logoUrl = getLogoUrl(ticker, domain);
+
+  // Reset state and set timeout when ticker changes
+  useEffect(() => {
+    setHasError(false);
+    setIsLoading(true);
+
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // Set 3-second timeout for logo loading
+    timeoutRef.current = setTimeout(() => {
+      if (isLoading) {
+        setHasError(true);
+        setIsLoading(false);
+      }
+    }, LOGO_TIMEOUT_MS);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [ticker, domain]);
 
   if (hasError || !logoUrl) {
     return (
@@ -60,7 +89,16 @@ export function CompanyLogo({ ticker, domain, size = 'md', className }: CompanyL
         width={imageSizes[size]}
         height={imageSizes[size]}
         className="object-contain p-0.5"
-        onError={() => setHasError(true)}
+        onError={() => {
+          setHasError(true);
+          setIsLoading(false);
+        }}
+        onLoad={() => {
+          setIsLoading(false);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+        }}
         unoptimized
       />
     </div>

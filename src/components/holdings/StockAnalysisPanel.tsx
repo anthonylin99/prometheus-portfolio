@@ -70,7 +70,7 @@ const ACCORDION_SECTIONS = [
   { key: 'bullCase' as const, label: 'Bull Case', accent: 'border-l-emerald-500' },
   { key: 'bearCase' as const, label: 'Bear Case / Risks', accent: 'border-l-red-500' },
   { key: 'valuation' as const, label: 'Valuation', accent: 'border-l-blue-500' },
-  { key: 'catalysts' as const, label: 'Catalysts & Timeline', accent: 'border-l-violet-500' },
+  { key: 'catalysts' as const, label: 'Catalysts & Timeline', accent: 'border-l-violet-400' },
 ] as const;
 
 function StockAnalysisSkeleton() {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import type { TechnicalSignal, SignalStrength } from '@/types/insights';
 import { Activity, ChevronDown, TrendingUp, TrendingDown, Minus } from 'lucide-react';
@@ -12,10 +12,22 @@ interface TechnicalMetricsProps {
 }
 
 export function TechnicalMetrics({ signals }: TechnicalMetricsProps) {
-  const [selectedTicker, setSelectedTicker] = useState<string | null>(
-    signals.length > 0 ? signals[0].ticker : null
-  );
+  // Initialize as null to prevent infinite re-render loop
+  const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+
+  // Sync selectedTicker when signals change (e.g., on initial load or refresh)
+  useEffect(() => {
+    if (signals.length > 0) {
+      // Only update if current selection is invalid or null
+      const isValidSelection = selectedTicker && signals.some(s => s.ticker === selectedTicker);
+      if (!isValidSelection) {
+        setSelectedTicker(signals[0].ticker);
+      }
+    } else {
+      setSelectedTicker(null);
+    }
+  }, [signals, selectedTicker]);
 
   const selectedSignal = signals.find(s => s.ticker === selectedTicker);
 

@@ -23,7 +23,7 @@ export function ThesisSection({ ticker }: ThesisSectionProps) {
   return (
     <div className="glass-card p-6 rounded-2xl">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-500/30 flex-shrink-0">
+        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-400/30 flex-shrink-0">
           <Image
             src="/profile.png"
             alt="Anthony"

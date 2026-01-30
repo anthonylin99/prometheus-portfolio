@@ -57,8 +57,8 @@ export function PortfolioSelector({
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all luma-button',
               isActive
-                ? 'bg-violet-600 text-white'
-                : 'bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-700/50'
+                ? 'bg-violet-400 text-white'
+                : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
             )}
           >
             <opt.icon className="w-3.5 h-3.5" />

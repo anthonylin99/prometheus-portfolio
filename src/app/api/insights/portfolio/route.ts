@@ -59,35 +59,60 @@ export async function GET(request: NextRequest) {
     const holdingsToAnalyze = tickers.slice(0, 10);
     const endDate = new Date();
     const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - 6);
+    startDate.setMonth(startDate.getMonth() - 3); // Reduced from 6 months to 3 for performance
 
-    const signalPromises = holdingsToAnalyze.map(async (ticker) => {
-      try {
-        const [historicalData, quoteData] = await Promise.all([
-          getHistoricalData(ticker, startDate, endDate),
-          getQuoteForMetrics(ticker),
-        ]);
+    // Helper: timeout wrapper for a promise
+    const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> => {
+      return Promise.race([
+        promise,
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Request timeout')), ms)
+        ),
+      ]);
+    };
 
-        if (historicalData.length < 26) {
+    // Concurrency limiter: process max 3 tickers at a time
+    const CONCURRENCY_LIMIT = 3;
+    const TIMEOUT_MS = 8000;
+    const signalResults: (TechnicalSignal | null)[] = [];
+
+    for (let i = 0; i < holdingsToAnalyze.length; i += CONCURRENCY_LIMIT) {
+      const batch = holdingsToAnalyze.slice(i, i + CONCURRENCY_LIMIT);
+      const batchPromises = batch.map(async (ticker): Promise<TechnicalSignal | null> => {
+        try {
+          const [historicalData, quoteData] = await withTimeout(
+            Promise.all([
+              getHistoricalData(ticker, startDate, endDate),
+              getQuoteForMetrics(ticker),
+            ]),
+            TIMEOUT_MS
+          );
+
+          if (historicalData.length < 26) {
+            return null;
+          }
+
+          // Null checks for Math.max/min on empty arrays
+          const highs = historicalData.map(d => d.high);
+          const lows = historicalData.map(d => d.low);
+          const fiftyTwoWeekHigh = quoteData?.fiftyTwoWeekHigh || (highs.length > 0 ? Math.max(...highs) : 0);
+          const fiftyTwoWeekLow = quoteData?.fiftyTwoWeekLow || (lows.length > 0 ? Math.min(...lows) : 0);
+
+          return generateTechnicalSignal(
+            ticker,
+            historicalData.map(d => ({ high: d.high, low: d.low, close: d.close })),
+            fiftyTwoWeekHigh,
+            fiftyTwoWeekLow
+          );
+        } catch (err) {
+          console.warn(`Failed to analyze ${ticker}:`, err);
           return null;
         }
+      });
 
-        const fiftyTwoWeekHigh = quoteData?.fiftyTwoWeekHigh || Math.max(...historicalData.map(d => d.high));
-        const fiftyTwoWeekLow = quoteData?.fiftyTwoWeekLow || Math.min(...historicalData.map(d => d.low));
-
-        return generateTechnicalSignal(
-          ticker,
-          historicalData.map(d => ({ high: d.high, low: d.low, close: d.close })),
-          fiftyTwoWeekHigh,
-          fiftyTwoWeekLow
-        );
-      } catch (err) {
-        console.warn(`Failed to analyze ${ticker}:`, err);
-        return null;
-      }
-    });
-
-    const signalResults = await Promise.all(signalPromises);
+      const batchResults = await Promise.all(batchPromises);
+      signalResults.push(...batchResults);
+    }
     const signals: TechnicalSignal[] = signalResults.filter((s): s is TechnicalSignal => s !== null);
 
     // Generate alerts from signals

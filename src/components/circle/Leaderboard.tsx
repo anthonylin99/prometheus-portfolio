@@ -36,7 +36,7 @@ export function Leaderboard() {
               className={cn(
                 'px-3 py-1.5 text-xs font-medium rounded-md transition-all',
                 range === r.value
-                  ? 'bg-violet-600 text-white shadow-sm'
+                  ? 'bg-violet-400 text-white shadow-sm'
                   : 'text-slate-400 hover:text-white'
               )}
             >

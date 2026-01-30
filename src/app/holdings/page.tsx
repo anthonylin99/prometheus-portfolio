@@ -78,7 +78,7 @@ export default function HoldingsPage() {
     return (
       <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-3 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-12 h-12 border-3 border-violet-400 border-t-transparent rounded-full animate-spin" />
           <p className="text-slate-400">Loading holdings...</p>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function HoldingsPage() {
 
         <div className="mt-8 flex flex-col items-center justify-center text-center">
           <div className="glass-card p-10 rounded-2xl max-w-lg">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-violet-500/20 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-violet-400/20 flex items-center justify-center">
               <Wallet className="w-8 h-8 text-violet-400" />
             </div>
             <h2 className="text-xl font-bold text-white mb-2">
@@ -110,14 +110,14 @@ export default function HoldingsPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={() => setShowAddModal(true)}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 hover:from-violet-500 hover:to-purple-500 transition-all"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-400 to-violet-400 text-white font-medium rounded-xl shadow-lg shadow-violet-400/25 hover:from-violet-400 hover:to-purple-500 transition-all"
               >
                 <Plus className="w-4 h-4" />
                 Add Your First Holding
               </button>
               <Link
                 href="/"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 glass-card text-slate-300 font-medium rounded-xl hover:text-white hover:border-violet-500/40 transition-all"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 glass-card text-slate-300 font-medium rounded-xl hover:text-white hover:border-violet-400/40 transition-all"
               >
                 <Flame className="w-4 h-4 text-orange-400" />
                 View Prometheus ETF
@@ -160,7 +160,7 @@ export default function HoldingsPage() {
           {isAuthenticated && (
             <button
               onClick={() => setShowAddModal(true)}
-              className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-violet-400 hover:text-white hover:border-violet-500/40 transition-all"
+              className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-violet-400 hover:text-white hover:border-violet-400/40 transition-all"
             >
               <Plus className="w-4 h-4" />
               <span className="text-sm">Add Ticker</span>
@@ -180,7 +180,7 @@ export default function HoldingsPage() {
           <button
             onClick={refresh}
             disabled={loading}
-            className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-slate-400 hover:text-white hover:border-violet-500/40 transition-all disabled:opacity-50"
+            className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-slate-400 hover:text-white hover:border-violet-400/40 transition-all disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             <span className="text-sm">
@@ -273,14 +273,14 @@ function AddTickerModal({
             onChange={(e) => onSearch(e.target.value)}
             placeholder="Search by ticker or company name..."
             autoFocus
-            className="w-full pl-11 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/25 transition-colors"
+            className="w-full pl-11 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 focus:ring-1 focus:ring-violet-400/25 transition-colors"
           />
         </div>
 
         <div className="max-h-64 overflow-y-auto space-y-2">
           {searching && (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 text-violet-500 animate-spin" />
+              <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
             </div>
           )}
 
@@ -299,7 +299,7 @@ function AddTickerModal({
                 className={cn(
                   "w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left",
                   isInPortfolio 
-                    ? "bg-violet-500/10 border border-violet-500/30" 
+                    ? "bg-violet-400/10 border border-violet-400/30" 
                     : "hover:bg-slate-700/50 disabled:opacity-50"
                 )}
               >
@@ -308,7 +308,7 @@ function AddTickerModal({
                   <div className="flex items-center gap-2">
                     <p className="font-semibold text-white">{result.ticker}</p>
                     {isInPortfolio && (
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-400">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-violet-400/20 text-violet-400">
                         In Portfolio
                       </span>
                     )}
@@ -319,7 +319,7 @@ function AddTickerModal({
                   )}
                 </div>
                 {adding === result.ticker ? (
-                  <Loader2 className="w-5 h-5 text-violet-500 animate-spin" />
+                  <Loader2 className="w-5 h-5 text-violet-400 animate-spin" />
                 ) : (
                   <Plus className="w-5 h-5 text-violet-400" />
                 )}

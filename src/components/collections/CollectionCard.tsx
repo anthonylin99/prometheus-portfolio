@@ -17,7 +17,7 @@ interface CollectionCardProps {
 
 const categoryBorderColors: Record<string, string> = {
   'anchor-sleeves': 'border-l-indigo-500',
-  'intelligence-compute': 'border-l-violet-500',
+  'intelligence-compute': 'border-l-violet-400',
   'real-world-scarcity': 'border-l-amber-500',
   'alternative-assets': 'border-l-orange-500',
   'thematic-frontiers': 'border-l-cyan-500',
@@ -58,7 +58,7 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
   const stockCount = collection.stocks.length;
   const displayStocks = collection.stocks.slice(0, 9);
   const remainingCount = Math.max(0, stockCount - 9);
-  const borderClass = categoryBorderColors[collection.categoryId] || 'border-l-violet-500';
+  const borderClass = categoryBorderColors[collection.categoryId] || 'border-l-violet-400';
 
   const handleAddClick = (e: React.MouseEvent) => {
     e.preventDefault();

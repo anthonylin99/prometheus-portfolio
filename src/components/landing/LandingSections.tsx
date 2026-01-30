@@ -2,26 +2,96 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { BarChart3, Target, TrendingUp, Users, Zap, Shield } from 'lucide-react';
+import {
+  BarChart3,
+  Target,
+  TrendingUp,
+  Users,
+  Zap,
+  Shield,
+  ArrowRight,
+  Sparkles,
+  LineChart,
+  PieChart,
+} from 'lucide-react';
 
-// Premium 3D glassmorphism icon container
-function FeatureIcon({ children, gradient }: { children: React.ReactNode; gradient: string }) {
+/**
+ * LandingSections - Stripe-inspired bento grid with gradient cards
+ *
+ * Design Philosophy:
+ * - Bento grid layout with varying card sizes
+ * - Each card has subtle gradient backgrounds
+ * - Smooth hover animations and micro-interactions
+ * - Stripe's warm purple → pink → coral color flow
+ */
+
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  gradient: 'gradient-1' | 'gradient-2' | 'gradient-3' | 'gradient-4' | 'gradient-5';
+  className?: string;
+  delay?: number;
+}
+
+function FeatureCard({ icon, title, description, gradient, className = '', delay = 0 }: FeatureCardProps) {
   return (
-    <div className="relative w-16 h-16 mb-6">
-      {/* Glow effect */}
-      <div 
-        className="absolute inset-0 rounded-2xl blur-xl opacity-40"
-        style={{ background: gradient }}
-      />
-      {/* Glass container */}
-      <div 
-        className="relative w-full h-full rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/10"
-        style={{ 
-          background: `linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%)`,
-          boxShadow: `0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)`
-        }}
-      >
-        {children}
+    <div
+      className={`bento-card ${gradient} ${className} animate-fade-in-up`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {/* Gradient accent line at top */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+      {/* Icon */}
+      <div className="relative mb-4">
+        <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center">
+          {icon}
+        </div>
+      </div>
+
+      {/* Content */}
+      <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
+      <p className="text-[#a1a1aa] leading-relaxed">{description}</p>
+
+      {/* Subtle arrow on hover */}
+      <div className="mt-4 flex items-center gap-2 text-[#A78BFA] opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="text-sm font-medium">Learn more</span>
+        <ArrowRight className="w-4 h-4" />
+      </div>
+    </div>
+  );
+}
+
+function LargeFeatureCard({
+  title,
+  description,
+  visual,
+  gradient,
+  className = '',
+  delay = 0,
+}: {
+  title: string;
+  description: string;
+  visual: React.ReactNode;
+  gradient: 'gradient-1' | 'gradient-2' | 'gradient-3' | 'gradient-4' | 'gradient-5';
+  className?: string;
+  delay?: number;
+}) {
+  return (
+    <div
+      className={`bento-card ${gradient} ${className} animate-fade-in-up group`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div className="flex flex-col h-full">
+        {/* Visual/Illustration area */}
+        <div className="flex-1 mb-6 relative min-h-[200px] rounded-xl overflow-hidden bg-white/5">
+          {visual}
+        </div>
+
+        {/* Content */}
+        <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
+        <p className="text-[#a1a1aa] leading-relaxed">{description}</p>
       </div>
     </div>
   );
@@ -30,125 +100,267 @@ function FeatureIcon({ children, gradient }: { children: React.ReactNode; gradie
 export function LandingSections() {
   return (
     <>
-      {/* Features Section */}
-      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-[#050510]">
-        <div className="max-w-6xl mx-auto">
+      {/* Features Bento Grid Section */}
+      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-radial" />
+
+        <div className="relative max-w-7xl mx-auto">
+          {/* Section Header */}
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">Features</h2>
-            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-              Everything you need to track and analyze your portfolio
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#A78BFA]/10 border border-[#A78BFA]/20 mb-6">
+              <Sparkles className="w-4 h-4 text-[#A78BFA]" />
+              <span className="text-sm font-medium text-[#a1a1aa]">Features</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 tracking-tight">
+              Everything you need
+            </h2>
+            <p className="text-xl text-[#a1a1aa] max-w-2xl mx-auto">
+              Powerful tools to track, analyze, and optimize your portfolio
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Real-Time Tracking */}
-            <div className="group relative p-8 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/10">
-              <FeatureIcon gradient="linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)">
-                <BarChart3 className="w-7 h-7 text-violet-400" />
-              </FeatureIcon>
-              <h3 className="text-xl font-bold text-white mb-3">Real-Time Tracking</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Monitor your portfolio with live price updates and performance metrics
-              </p>
-            </div>
 
-            {/* AI Analysis */}
-            <div className="group relative p-8 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 hover:border-purple-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/10">
-              <FeatureIcon gradient="linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%)">
-                <Target className="w-7 h-7 text-purple-400" />
-              </FeatureIcon>
-              <h3 className="text-xl font-bold text-white mb-3">AI Analysis</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Get AI-powered investment research and thesis validation
-              </p>
-            </div>
+          {/* Bento Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Large Card - Real-Time Tracking */}
+            <LargeFeatureCard
+              title="Real-Time Portfolio Tracking"
+              description="Monitor your holdings with live price updates. See your portfolio value change in real-time throughout the trading day."
+              gradient="gradient-1"
+              className="lg:col-span-2 lg:row-span-2"
+              delay={0}
+              visual={
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative w-full h-full p-6">
+                    {/* Animated chart preview */}
+                    <div className="absolute inset-6 flex items-end justify-around gap-2">
+                      {[65, 45, 80, 55, 90, 70, 85, 60, 95, 75, 88, 68].map((height, i) => (
+                        <div
+                          key={i}
+                          className="w-full max-w-[40px] rounded-t-lg bg-gradient-to-t from-[#A78BFA] to-[#c026d3] opacity-60"
+                          style={{
+                            height: `${height}%`,
+                            animationDelay: `${i * 100}ms`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    {/* Overlay glow */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-[#A78BFA]/20 to-transparent" />
+                  </div>
+                </div>
+              }
+            />
+
+            {/* AI Analysis Card */}
+            <FeatureCard
+              icon={<Target className="w-6 h-6 text-[#c026d3]" />}
+              title="AI Analysis"
+              description="Get AI-powered investment research and thesis validation with Claude"
+              gradient="gradient-2"
+              delay={100}
+            />
 
             {/* Benchmark Comparison */}
-            <div className="group relative p-8 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 hover:border-emerald-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/10">
-              <FeatureIcon gradient="linear-gradient(135deg, #10b981 0%, #059669 100%)">
-                <TrendingUp className="w-7 h-7 text-emerald-400" />
-              </FeatureIcon>
-              <h3 className="text-xl font-bold text-white mb-3">Benchmark Comparison</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Compare your performance against SPY, QQQ, and other benchmarks
-              </p>
-            </div>
+            <FeatureCard
+              icon={<TrendingUp className="w-6 h-6 text-[#10b981]" />}
+              title="Benchmark Comparison"
+              description="Compare your performance against SPY, QQQ, and major indices"
+              gradient="gradient-3"
+              delay={200}
+            />
 
             {/* Social Portfolio */}
-            <div className="group relative p-8 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 hover:border-amber-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-amber-500/10">
-              <FeatureIcon gradient="linear-gradient(135deg, #f59e0b 0%, #d97706 100%)">
-                <Users className="w-7 h-7 text-amber-400" />
-              </FeatureIcon>
-              <h3 className="text-xl font-bold text-white mb-3">Social Portfolio</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Share your ETF with friends and compete on leaderboards
-              </p>
-            </div>
+            <FeatureCard
+              icon={<Users className="w-6 h-6 text-[#f97316]" />}
+              title="Investment Circles"
+              description="Share your ETF with friends and see how your circle performs"
+              gradient="gradient-5"
+              delay={300}
+            />
 
             {/* Catalyst Tracking */}
-            <div className="group relative p-8 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 hover:border-cyan-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/10">
-              <FeatureIcon gradient="linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)">
-                <Zap className="w-7 h-7 text-cyan-400" />
-              </FeatureIcon>
-              <h3 className="text-xl font-bold text-white mb-3">Catalyst Tracking</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Track upcoming earnings, events, and catalysts for your holdings
+            <FeatureCard
+              icon={<Zap className="w-6 h-6 text-[#3b82f6]" />}
+              title="Catalyst Tracking"
+              description="Never miss an earnings report, dividend, or market-moving event"
+              gradient="gradient-4"
+              delay={400}
+            />
+
+            {/* Risk Metrics - Large */}
+            <LargeFeatureCard
+              title="Risk Analytics"
+              description="Understand your portfolio's risk profile with volatility metrics, drawdown analysis, and sector concentration insights."
+              gradient="gradient-2"
+              className="lg:col-span-2"
+              delay={500}
+              visual={
+                <div className="absolute inset-0 flex items-center justify-center p-6">
+                  {/* Pie chart visualization */}
+                  <div className="relative w-40 h-40">
+                    <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="none"
+                        stroke="rgba(99, 91, 255, 0.3)"
+                        strokeWidth="20"
+                      />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="none"
+                        stroke="url(#gradient1)"
+                        strokeWidth="20"
+                        strokeDasharray="150 251.2"
+                        strokeLinecap="round"
+                      />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="none"
+                        stroke="url(#gradient2)"
+                        strokeWidth="20"
+                        strokeDasharray="60 251.2"
+                        strokeDashoffset="-150"
+                        strokeLinecap="round"
+                      />
+                      <defs>
+                        <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#A78BFA" />
+                          <stop offset="100%" stopColor="#c026d3" />
+                        </linearGradient>
+                        <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#f97316" />
+                          <stop offset="100%" stopColor="#ec4899" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">72%</div>
+                        <div className="text-xs text-[#a1a1aa]">Score</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* About Section with Stripe-style design */}
+      <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Flowing gradient background */}
+        <div className="absolute inset-0 stream-right opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0f]/50 to-[#0a0a0f]" />
+
+        <div className="relative max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Content */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#A78BFA]/10 border border-[#A78BFA]/20 mb-6">
+                <span className="text-sm font-medium text-[#a1a1aa]">About Prometheus</span>
+              </div>
+
+              <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 tracking-tight">
+                Bringing fire to
+                <span className="glow-text-stripe"> retail investors</span>
+              </h2>
+
+              <p className="text-lg text-[#a1a1aa] mb-6 leading-relaxed">
+                In Greek mythology, Prometheus defied the gods to steal fire from Mount Olympus
+                and gift it to humanity—giving mortals the power that was once reserved only for the divine.
               </p>
+
+              <p className="text-lg text-[#71717a] mb-8 leading-relaxed">
+                Today, the financial markets remain a modern Olympus. Prometheus ETF brings that fire
+                to retail investors—democratizing access to sophisticated portfolio tracking, AI-powered
+                analysis, and transparent investment methodology.
+              </p>
+
+              <Link href="/dashboard" className="btn-primary">
+                Start Tracking
+                <ArrowRight className="w-5 h-5" />
+              </Link>
             </div>
 
-            {/* Risk Metrics */}
-            <div className="group relative p-8 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 hover:border-rose-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-rose-500/10">
-              <FeatureIcon gradient="linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)">
-                <Shield className="w-7 h-7 text-rose-400" />
-              </FeatureIcon>
-              <h3 className="text-xl font-bold text-white mb-3">Risk Metrics</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Analyze volatility, drawdowns, and risk-adjusted returns
-              </p>
+            {/* Visual - Premium card with logo */}
+            <div className="relative">
+              <div className="gradient-card p-8">
+                {/* Animated gradient background */}
+                <div className="card-gradient-animated opacity-20" />
+
+                <div className="relative z-10">
+                  {/* Logo */}
+                  <div className="w-24 h-24 mx-auto mb-6 rounded-2xl overflow-hidden bg-gradient-to-br from-[#A78BFA] to-[#c026d3] p-[2px]">
+                    <div className="w-full h-full rounded-2xl overflow-hidden bg-[#0a0a0f]">
+                      <Image
+                        src="/prometheus.png"
+                        alt="Prometheus ETF"
+                        width={96}
+                        height={96}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Stats grid */}
+                  <div className="grid grid-cols-2 gap-4 mt-8">
+                    <div className="text-center p-4 rounded-xl bg-white/5">
+                      <div className="text-3xl font-bold text-white">$2M+</div>
+                      <div className="text-sm text-[#71717a]">Tracked</div>
+                    </div>
+                    <div className="text-center p-4 rounded-xl bg-white/5">
+                      <div className="text-3xl font-bold text-white">24/7</div>
+                      <div className="text-sm text-[#71717a]">Monitoring</div>
+                    </div>
+                    <div className="text-center p-4 rounded-xl bg-white/5">
+                      <div className="text-3xl font-bold text-white">AI</div>
+                      <div className="text-sm text-[#71717a]">Powered</div>
+                    </div>
+                    <div className="text-center p-4 rounded-xl bg-white/5">
+                      <div className="text-3xl font-bold text-[#10b981]">+18%</div>
+                      <div className="text-sm text-[#71717a]">YTD</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating decoration */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-gradient-to-br from-[#A78BFA]/30 to-transparent blur-xl" />
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-gradient-to-br from-[#f97316]/30 to-transparent blur-xl" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#050510] to-[#0a0a1a]">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-12">
-            {/* Prometheus Logo with Premium Styling */}
-            <div className="relative w-28 h-28 mx-auto mb-8">
-              {/* Outer glow */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-500/40 to-purple-600/40 blur-2xl" />
-              {/* Ring glow */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-500/20 to-purple-600/20 animate-pulse" />
-              {/* Image container */}
-              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-violet-500/50 shadow-2xl shadow-violet-500/30">
-                <Image
-                  src="/prometheus.png"
-                  alt="Prometheus ETF"
-                  width={112}
-                  height={112}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-            
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 tracking-tight">About Prometheus ETF</h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-6 leading-relaxed">
-              In Greek mythology, Prometheus defied the gods to steal fire from Mount Olympus and gift it to humanity—giving mortals the power that was once reserved only for the divine.
-            </p>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              Today, the financial markets remain a modern Olympus. Prometheus ETF brings that fire to retail investors—democratizing access to sophisticated portfolio tracking, AI-powered analysis, and transparent investment methodology.
-            </p>
+      {/* CTA Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-radial opacity-50" />
+
+        <div className="relative max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
+            Ready to transform your
+            <br />
+            <span className="glow-text-stripe">portfolio tracking?</span>
+          </h2>
+
+          <p className="text-xl text-[#a1a1aa] mb-10 max-w-2xl mx-auto">
+            Join thousands of investors using Prometheus to make smarter decisions.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link href="/dashboard" className="btn-primary text-lg px-10 py-5">
+              Get Started Free
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </div>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-10 py-5 text-white font-semibold text-lg rounded-xl transition-all duration-200 shadow-2xl hover:scale-105 active:scale-95"
-            style={{
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
-              boxShadow: '0 20px 40px rgba(139, 92, 246, 0.4)',
-            }}
-          >
-            Explore the Portfolio
-          </Link>
         </div>
       </section>
     </>

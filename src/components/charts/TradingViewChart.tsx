@@ -254,7 +254,7 @@ export function TradingViewChart({
               className={cn(
                 "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                 range === r
-                  ? "bg-violet-500 text-white shadow-lg shadow-violet-500/25"
+                  ? "bg-violet-400 text-white shadow-lg shadow-violet-400/25"
                   : "text-slate-400 hover:text-white hover:bg-white/5"
               )}
             >
@@ -269,7 +269,7 @@ export function TradingViewChart({
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm rounded-xl z-10">
             <div className="flex items-center gap-3">
-              <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+              <div className="w-6 h-6 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
               <span className="text-slate-400">Loading chart data...</span>
             </div>
           </div>

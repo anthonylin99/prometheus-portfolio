@@ -2,44 +2,69 @@
 @import "tailwindcss";
 
 :root {
-  /* Core Colors - Yankee Candle Lavender Theme */
-  --bg-primary: #08070f;
-  --bg-secondary: #0d0b18;
-  --bg-tertiary: #141022;
-  --bg-card: rgba(18, 14, 30, 0.7);
-  --bg-card-hover: rgba(25, 20, 42, 0.85);
+  /* ═══════════════════════════════════════════════════════════════════════════
+     STRIPE-INSPIRED COLOR SYSTEM - Prometheus Design Language v3.0
+     Inspired by Stripe's flowing gradients, Robinhood's data density, Luma's elegance
+     ═══════════════════════════════════════════════════════════════════════════ */
 
-  /* Lavender Accent Colors */
-  --accent-primary: #9b8ac4;      /* Soft lavender */
-  --accent-secondary: #7c6baa;    /* Dusty purple */
-  --accent-tertiary: #b8a8d9;     /* Light lavender */
-  --accent-muted: #6b5a8e;        /* Muted purple */
-  --accent-rose: #c4a8b8;         /* Dusty rose complement */
-  --accent-cyan: #a8c4d9;         /* Muted cyan for compatibility */
-  --accent-positive: #7bc4a8;     /* Muted sage green */
-  --accent-negative: #c48a8a;     /* Muted rose red */
+  /* Core Background - Deep cosmic with subtle warmth */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #0f0f16;
+  --bg-tertiary: #15151f;
+  --bg-elevated: #1a1a26;
 
-  /* Text Colors - Warmer Whites */
-  --text-primary: #f5f3fa;
-  --text-secondary: #a8a0b8;
-  --text-muted: #706880;
+  /* Stripe Gradient Palette - The Heart of Our Design */
+  --stripe-purple: #A78BFA;      /* Lavender violet-400 */
+  --stripe-violet: #C4B5FD;      /* Light lavender violet-300 */
+  --stripe-fuchsia: #c026d3;     /* Vibrant fuchsia */
+  --stripe-pink: #ec4899;        /* Hot pink */
+  --stripe-coral: #f97316;       /* Warm coral/orange */
+  --stripe-amber: #fbbf24;       /* Golden amber */
 
-  /* Borders & Glows */
-  --border-primary: rgba(155, 138, 196, 0.2);
-  --border-secondary: rgba(112, 104, 128, 0.2);
+  /* Gradient Accent Colors - For UI Elements */
+  --accent-primary: #A78BFA;
+  --accent-secondary: #C4B5FD;
+  --accent-tertiary: #8B5CF6;
+  --accent-glow: rgba(167, 139, 250, 0.5);
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #7c6baa 0%, #9b8ac4 50%, #b8a8d9 100%);
-  --gradient-bg: linear-gradient(180deg, #08070f 0%, #0d0b18 50%, #141022 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, rgba(155, 138, 196, 0.12) 0%, transparent 60%);
+  /* Semantic Colors */
+  --positive: #10b981;           /* Emerald green */
+  --positive-glow: rgba(16, 185, 129, 0.2);
+  --negative: #ef4444;           /* Clear red */
+  --negative-glow: rgba(239, 68, 68, 0.2);
+  --warning: #f59e0b;            /* Amber */
+  --info: #3b82f6;               /* Blue */
 
-  /* Luma Design Tokens - Updated for Lavender */
-  --luma-bg-dark: #08070f;
-  --luma-border-dark: #1a1626;
-  --luma-blue: #b8a8d9;
-  --luma-blue-gradient: #9b8ac4;
+  /* Text Hierarchy - Clean and readable */
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-subtle: #52525b;
+
+  /* Card Backgrounds - Glassmorphism with depth */
+  --card-bg: rgba(20, 20, 30, 0.6);
+  --card-bg-hover: rgba(30, 30, 45, 0.8);
+  --card-border: rgba(167, 139, 250, 0.15);
+  --card-border-hover: rgba(167, 139, 250, 0.35);
+
+  /* Stripe-style Gradient Cards */
+  --gradient-card-1: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f97316 100%);
+  --gradient-card-2: linear-gradient(135deg, #7c3aed 0%, #c026d3 50%, #ec4899 100%);
+  --gradient-card-3: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #d946ef 100%);
+  --gradient-card-4: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #6366f1 100%);
+  --gradient-card-5: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%);
+
+  /* Animation Timings */
+  --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Spacing & Layout */
   --grid-gap: 1rem;
-  --grid-max-width: 1200px;
+  --grid-max-width: 1400px;
+  --border-radius-sm: 0.5rem;
+  --border-radius-md: 1rem;
+  --border-radius-lg: 1.5rem;
+  --border-radius-xl: 2rem;
 }
 
 @theme inline {
@@ -67,243 +92,501 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Background Effects - Luma-inspired Lavender */
-.bg-gradient-radial {
+/* ═══════════════════════════════════════════════════════════════════════════
+   STRIPE FLOWING GRADIENT BACKGROUND
+   The signature "stream to the right" effect from Stripe's homepage
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.stripe-gradient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+.stripe-gradient-bg::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 140%;
+  height: 200%;
   background:
-    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(155, 138, 196, 0.25) 0%, transparent 50%),
-    radial-gradient(ellipse 80% 60% at 0% 50%, rgba(124, 107, 170, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse 80% 60% at 100% 50%, rgba(196, 168, 184, 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse 100% 100% at 50% 100%, rgba(124, 107, 170, 0.08) 0%, transparent 60%),
-    linear-gradient(180deg, #0d0a14 0%, #0f0c18 50%, #12101c 100%);
+    conic-gradient(
+      from 90deg at 40% 50%,
+      var(--stripe-purple) 0deg,
+      var(--stripe-violet) 60deg,
+      var(--stripe-fuchsia) 120deg,
+      var(--stripe-pink) 180deg,
+      var(--stripe-coral) 240deg,
+      var(--stripe-amber) 300deg,
+      var(--stripe-purple) 360deg
+    );
+  animation: stripe-flow 20s linear infinite;
+  opacity: 0.4;
+  filter: blur(100px);
 }
 
-/* Glass Card Effect */
-.glass-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-primary);
-  border-radius: 1rem;
-  transition: all 0.3s ease;
+.stripe-gradient-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% 0%, transparent 0%, var(--bg-primary) 70%);
 }
 
-.glass-card:hover {
-  background: var(--bg-card-hover);
-  border-color: rgba(155, 138, 196, 0.4);
-  box-shadow: 0 0 40px rgba(155, 138, 196, 0.1);
+@keyframes stripe-flow {
+  0% {
+    transform: rotate(0deg) translateX(0);
+  }
+  100% {
+    transform: rotate(360deg) translateX(0);
+  }
 }
 
-/* Luma Card - Inspired by lu.ma design */
-.luma-card {
-  background: rgba(15, 15, 35, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 24px;
-  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s ease;
+/* Stream to the Right - Horizontal flowing gradient */
+.stream-right {
+  position: relative;
+  overflow: hidden;
 }
 
-.luma-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+.stream-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 300%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--stripe-purple) 15%,
+    var(--stripe-violet) 25%,
+    var(--stripe-fuchsia) 40%,
+    var(--stripe-pink) 55%,
+    var(--stripe-coral) 70%,
+    var(--stripe-amber) 85%,
+    transparent 100%
+  );
+  animation: stream-flow 8s linear infinite;
+  opacity: 0.6;
+  filter: blur(60px);
 }
 
-/* Luma Typography */
-.luma-heading {
-  font-weight: 600;
-  letter-spacing: -0.02em;
+@keyframes stream-flow {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(33.33%);
+  }
 }
 
-.luma-body {
-  font-weight: 400;
-  letter-spacing: -0.01em;
+/* Hero Gradient - Full page flowing effect */
+.hero-gradient {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
 }
 
-.luma-mono {
-  font-feature-settings: 'tnum' 1;
-}
-
-/* Luma Micro-interactions */
-.luma-button {
-  transition: transform 0.1s ease, background-color 0.2s ease;
-}
-
-.luma-button:active {
-  transform: scale(0.96);
-}
-
-.luma-hover:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-/* Glow Effects */
-.glow-text {
-  text-shadow: 0 0 20px rgba(155, 138, 196, 0.5),
-               0 0 40px rgba(155, 138, 196, 0.3);
-}
-
-.glow-box {
-  box-shadow: 0 0 30px rgba(155, 138, 196, 0.15),
-              inset 0 0 30px rgba(155, 138, 196, 0.05);
-}
-
-/* Animated Background Orbs */
-.bg-orb {
+.hero-gradient .gradient-orb {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.3;
-  animation: float 20s ease-in-out infinite;
+  opacity: 0.7;
+  animation: float-orb 15s ease-in-out infinite;
 }
 
-.bg-orb-1 {
-  width: 600px;
-  height: 600px;
-  background: rgba(155, 138, 196, 0.35);
-  top: -200px;
-  left: -200px;
+.hero-gradient .gradient-orb-1 {
+  width: 800px;
+  height: 800px;
+  background: linear-gradient(135deg, var(--stripe-purple), var(--stripe-violet));
+  top: -20%;
+  right: -10%;
   animation-delay: 0s;
 }
 
-.bg-orb-2 {
-  width: 400px;
-  height: 400px;
-  background: rgba(124, 107, 170, 0.25);
-  top: 50%;
-  right: -150px;
-  animation-delay: -7s;
+.hero-gradient .gradient-orb-2 {
+  width: 600px;
+  height: 600px;
+  background: linear-gradient(135deg, var(--stripe-fuchsia), var(--stripe-pink));
+  top: 20%;
+  right: 20%;
+  animation-delay: -5s;
 }
 
-.bg-orb-3 {
+.hero-gradient .gradient-orb-3 {
   width: 500px;
   height: 500px;
-  background: rgba(196, 168, 184, 0.18);
-  bottom: -200px;
-  left: 30%;
-  animation-delay: -14s;
+  background: linear-gradient(135deg, var(--stripe-coral), var(--stripe-amber));
+  top: 40%;
+  right: -5%;
+  animation-delay: -10s;
 }
 
-@keyframes float {
+@keyframes float-orb {
   0%, 100% {
     transform: translate(0, 0) scale(1);
   }
-  33% {
-    transform: translate(30px, -30px) scale(1.05);
+  25% {
+    transform: translate(-30px, 30px) scale(1.05);
   }
-  66% {
-    transform: translate(-20px, 20px) scale(0.95);
+  50% {
+    transform: translate(-60px, 0) scale(0.95);
+  }
+  75% {
+    transform: translate(-30px, -30px) scale(1.02);
   }
 }
 
-/* Animated Gradient Border */
-.gradient-border {
+/* ═══════════════════════════════════════════════════════════════════════════
+   PREMIUM GLASS CARDS
+   Stripe-inspired card design with gradient borders and depth
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-lg);
+  transition: all 0.3s var(--animation-smooth);
+}
+
+.glass-card:hover {
+  background: var(--card-bg-hover);
+  border-color: var(--card-border-hover);
+  box-shadow:
+    0 0 40px rgba(167, 139, 250, 0.1),
+    0 20px 60px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Gradient Border Card - Premium effect */
+.gradient-card {
   position: relative;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  transition: all 0.4s var(--animation-smooth);
 }
 
-.gradient-border::before {
+.gradient-card::before {
   content: '';
   position: absolute;
   inset: 0;
   padding: 1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(155, 138, 196, 0.5), rgba(124, 107, 170, 0.2), rgba(196, 168, 184, 0.3));
+  background: linear-gradient(
+    135deg,
+    var(--stripe-purple) 0%,
+    var(--stripe-fuchsia) 50%,
+    var(--stripe-coral) 100%
+  );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
 }
 
-/* Chart Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+.gradient-card:hover::before {
+  opacity: 1;
+}
+
+.gradient-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 60px rgba(167, 139, 250, 0.15),
+    0 30px 80px rgba(0, 0, 0, 0.4);
+}
+
+/* Stripe-style Bento Card with Gradient Fill */
+.bento-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius-xl);
+  padding: 2rem;
+  transition: all 0.4s var(--animation-smooth);
+}
+
+.bento-card.gradient-1 {
+  background: linear-gradient(135deg,
+    rgba(167, 139, 250, 0.15) 0%,
+    rgba(196, 181, 253, 0.1) 50%,
+    rgba(192, 38, 211, 0.08) 100%
+  );
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.bento-card.gradient-2 {
+  background: linear-gradient(135deg,
+    rgba(192, 38, 211, 0.15) 0%,
+    rgba(236, 72, 153, 0.1) 50%,
+    rgba(249, 115, 22, 0.08) 100%
+  );
+  border: 1px solid rgba(236, 72, 153, 0.2);
+}
+
+.bento-card.gradient-3 {
+  background: linear-gradient(135deg,
+    rgba(59, 130, 246, 0.15) 0%,
+    rgba(139, 92, 246, 0.1) 50%,
+    rgba(217, 70, 239, 0.08) 100%
+  );
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.bento-card.gradient-4 {
+  background: linear-gradient(135deg,
+    rgba(6, 182, 212, 0.15) 0%,
+    rgba(59, 130, 246, 0.1) 50%,
+    rgba(99, 102, 241, 0.08) 100%
+  );
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.bento-card.gradient-5 {
+  background: linear-gradient(135deg,
+    rgba(249, 115, 22, 0.15) 0%,
+    rgba(236, 72, 153, 0.1) 50%,
+    rgba(139, 92, 246, 0.08) 100%
+  );
+  border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.bento-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+}
+
+/* Animated Gradient Background for Cards */
+.card-gradient-animated {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.card-gradient-animated::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    var(--stripe-purple),
+    var(--stripe-fuchsia),
+    var(--stripe-pink),
+    var(--stripe-coral),
+    var(--stripe-purple)
+  );
+  animation: rotate-gradient 10s linear infinite;
+  filter: blur(40px);
+}
+
+@keyframes rotate-gradient {
+  0% {
+    transform: rotate(0deg);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  100% {
+    transform: rotate(360deg);
   }
 }
 
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* ═══════════════════════════════════════════════════════════════════════════
+   STAT CARDS - Stripe-inspired data display
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.stat-card {
+  position: relative;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(
+    135deg,
+    rgba(167, 139, 250, 0.08) 0%,
+    rgba(196, 181, 253, 0.05) 100%
+  );
+  border: 1px solid rgba(167, 139, 250, 0.15);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s var(--animation-smooth);
+  overflow: hidden;
 }
 
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--stripe-purple),
+    var(--stripe-fuchsia),
+    transparent
+  );
+  opacity: 0.5;
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
+.stat-card:hover {
+  border-color: rgba(167, 139, 250, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(167, 139, 250, 0.1);
 }
 
-.animate-scale-in {
-  animation: scaleIn 0.5s ease-out forwards;
+.stat-card .stat-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, var(--stripe-purple), var(--stripe-violet));
+  color: white;
+  margin-bottom: 0.75rem;
 }
 
-.animate-slide-in {
-  animation: slideInRight 0.5s ease-out forwards;
+.stat-card .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  font-feature-settings: 'tnum' 1;
 }
 
-/* PIN Modal Shake Animation */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-  20%, 40%, 60%, 80% { transform: translateX(4px); }
+.stat-card .stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
 }
 
-.animate-shake {
-  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOLDING CARDS - Mini gradient cards for portfolio items
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.holding-card {
+  position: relative;
+  padding: 1rem 1.25rem;
+  border-radius: var(--border-radius-md);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition: all 0.3s var(--animation-smooth);
+  overflow: hidden;
 }
 
-/* Stagger delays */
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.holding-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--stripe-purple), var(--stripe-fuchsia), var(--stripe-coral));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s var(--animation-smooth);
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+.holding-card:hover {
+  border-color: var(--card-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--border-primary);
-  border-radius: 4px;
+.holding-card:hover::after {
+  transform: scaleX(1);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-primary);
+/* Positive/Negative holding states */
+.holding-card.positive {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, var(--card-bg) 100%);
+  border-color: rgba(16, 185, 129, 0.2);
 }
 
-/* Number Formatting */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
+.holding-card.positive::after {
+  background: linear-gradient(90deg, #10b981, #34d399);
 }
 
-/* Shimmer effect for loading states */
+.holding-card.negative {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, var(--card-bg) 100%);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.holding-card.negative::after {
+  background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTONS - Stripe-style with gradient and depth
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: white;
+  background: linear-gradient(135deg, var(--stripe-purple) 0%, var(--stripe-violet) 100%);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all 0.2s var(--animation-smooth);
+  box-shadow:
+    0 4px 14px rgba(167, 139, 250, 0.4),
+    0 0 0 0 rgba(167, 139, 250, 0);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 20px rgba(167, 139, 250, 0.5),
+    0 0 40px rgba(167, 139, 250, 0.2);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--stripe-purple);
+  background: transparent;
+  border: 2px solid var(--stripe-purple);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all 0.2s var(--animation-smooth);
+}
+
+.btn-secondary:hover {
+  background: rgba(167, 139, 250, 0.1);
+  border-color: var(--stripe-violet);
+  color: var(--stripe-violet);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MICRO-ANIMATIONS - Subtle life and movement
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Shimmer loading effect */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -317,53 +600,203 @@ body {
   background: linear-gradient(
     90deg,
     var(--bg-tertiary) 0%,
-    var(--bg-card) 50%,
+    var(--bg-elevated) 50%,
     var(--bg-tertiary) 100%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
-/* Noise overlay for texture */
-.noise-overlay::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.02;
-  pointer-events: none;
-  z-index: 100;
-}
-
-/* Bitcoin Rain Animation */
-@keyframes bitcoin-fall {
-  0% {
-    transform: translateY(-50px) rotate(0deg);
+/* Fade and slide animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  100% {
-    transform: translateY(calc(100vh + 50px)) rotate(360deg);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes bitcoin-sway {
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s var(--animation-smooth) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.6s var(--animation-smooth) forwards;
+}
+
+.animate-fade-in-left {
+  animation: fadeInLeft 0.6s var(--animation-smooth) forwards;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight 0.6s var(--animation-smooth) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s var(--animation-smooth) forwards;
+}
+
+/* Stagger delays for lists */
+.delay-75 { animation-delay: 75ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Pulse glow effect */
+@keyframes pulse-glow {
   0%, 100% {
-    margin-left: 0px;
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
   }
   50% {
-    margin-left: 15px;
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.5);
   }
 }
 
-.bitcoin-rain-particle {
-  position: absolute;
-  color: #f59e0b;
-  font-weight: bold;
-  animation: bitcoin-fall linear infinite, bitcoin-sway ease-in-out infinite;
-  user-select: none;
-  pointer-events: none;
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Ticker Tape Scroll Animation */
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLOW EFFECTS - Premium light effects
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.glow-text {
+  text-shadow:
+    0 0 20px var(--accent-glow),
+    0 0 40px var(--accent-glow);
+}
+
+.glow-text-stripe {
+  background: linear-gradient(135deg, var(--stripe-purple), var(--stripe-fuchsia), var(--stripe-coral));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.5));
+}
+
+.glow-box {
+  box-shadow:
+    0 0 30px rgba(167, 139, 250, 0.2),
+    inset 0 0 30px rgba(167, 139, 250, 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBAR - Minimalist design
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--stripe-purple);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY - Clean and professional
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.heading-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LEGACY SUPPORT - Maintaining existing class names
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Luma card backward compatibility */
+.luma-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  transition: all 0.3s var(--animation-smooth);
+}
+
+.luma-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Background gradient radial - updated */
+.bg-gradient-radial {
+  background:
+    radial-gradient(ellipse 120% 80% at 80% -20%, rgba(167, 139, 250, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 60% at 100% 30%, rgba(192, 38, 211, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 60% 60%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
+    linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+}
+
+/* Ticker tape animation */
 @keyframes ticker-scroll {
   0% {
     transform: translateX(0);
@@ -379,4 +812,26 @@ body {
 
 .ticker-scroll:hover {
   animation-play-state: paused;
+}
+
+/* PIN Modal Shake Animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Noise overlay for texture - subtle */
+.noise-overlay::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.015;
+  pointer-events: none;
+  z-index: 100;
 }

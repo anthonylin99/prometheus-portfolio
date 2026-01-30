@@ -58,7 +58,7 @@ Welcome to Prometheus. Take the fire.`,
 // Benchmark tickers for comparison
 // Colors: Artemis purple, vibrant green, coral orange, electric blue
 export const benchmarks = [
-  { ticker: 'SPY', name: 'S&P 500', color: '#684FF8' },      // Artemis purple
+  { ticker: 'SPY', name: 'S&P 500', color: '#A78BFA' },      // Artemis purple
   { ticker: 'QQQ', name: 'Nasdaq 100', color: '#00D9A5' },   // Vibrant teal-green
   { ticker: 'ARKK', name: 'ARK Innovation', color: '#FF6B6B' }, // Coral red
   { ticker: 'BITQ', name: 'Bitwise Crypto', color: '#FFB800' }, // Golden yellow

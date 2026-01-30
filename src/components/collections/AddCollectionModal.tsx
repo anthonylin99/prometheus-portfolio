@@ -121,7 +121,7 @@ export function AddCollectionModal({
             )}
             <button
               onClick={onClose}
-              className="mt-6 px-6 py-2 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl transition-colors"
+              className="mt-6 px-6 py-2 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors"
             >
               Done
             </button>
@@ -139,7 +139,7 @@ export function AddCollectionModal({
                 onChange={(e) => setShares(e.target.value)}
                 min="0.01"
                 step="any"
-                className="w-32 px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:border-violet-500/50"
+                className="w-32 px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:border-violet-400/50"
               />
             </div>
 
@@ -174,7 +174,7 @@ export function AddCollectionModal({
                   className={cn(
                     'w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left',
                     selectedTickers.includes(t.ticker)
-                      ? 'bg-violet-500/10 border border-violet-500/30'
+                      ? 'bg-violet-400/10 border border-violet-400/30'
                       : 'bg-slate-800/30 border border-transparent hover:bg-slate-700/30'
                   )}
                 >
@@ -182,7 +182,7 @@ export function AddCollectionModal({
                     className={cn(
                       'w-5 h-5 rounded flex items-center justify-center',
                       selectedTickers.includes(t.ticker)
-                        ? 'bg-violet-600 text-white'
+                        ? 'bg-violet-400 text-white'
                         : 'bg-slate-700 text-transparent'
                     )}
                   >
@@ -209,7 +209,7 @@ export function AddCollectionModal({
               <button
                 onClick={handleAdd}
                 disabled={adding || selectedTickers.length === 0}
-                className="flex-1 py-3 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {adding ? (
                   <>

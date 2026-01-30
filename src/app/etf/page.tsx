@@ -66,8 +66,8 @@ export default function ETFPage() {
       {/* Hero Section */}
       <div className="glass-card p-8 lg:p-10 rounded-3xl mb-8 relative overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600/10 via-transparent to-cyan-600/10" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-400/10 via-transparent to-cyan-600/10" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-violet-400/10 rounded-full blur-3xl" />
         
         <div className="relative">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
@@ -86,7 +86,7 @@ export default function ETFPage() {
                   <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight">
                     ${etf?.ticker || 'ALIN'}
                   </h1>
-                  <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-sm font-medium">
+                  <span className="px-3 py-1 rounded-full bg-violet-400/20 text-violet-400 text-sm font-medium">
                     Prometheus ETF
                   </span>
                 </div>

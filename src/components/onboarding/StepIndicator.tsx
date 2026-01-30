@@ -26,7 +26,7 @@ export function StepIndicator({ currentStep, totalSteps, labels }: StepIndicator
                   isCompleted
                     ? 'bg-emerald-500 text-white'
                     : isCurrent
-                      ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/30'
+                      ? 'bg-violet-400 text-white shadow-lg shadow-violet-400/30'
                       : 'bg-slate-800 text-slate-500 border border-slate-700'
                 )}
               >

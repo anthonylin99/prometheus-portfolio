@@ -222,7 +222,7 @@ export default function OnboardingPage() {
                   setError(null);
                 }}
                 disabled={step === 1 ? !canProceedStep1 : !canProceedStep2}
-                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-violet-500/25 text-sm"
+                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-violet-400 to-violet-400 hover:from-violet-400 hover:to-purple-500 text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-violet-400/25 text-sm"
               >
                 Continue
                 <ArrowRight className="w-4 h-4" />

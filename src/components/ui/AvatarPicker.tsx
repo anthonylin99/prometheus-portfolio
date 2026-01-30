@@ -90,7 +90,7 @@ export function AvatarPicker({
               className={cn(
                 'w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all',
                 selectedIcon === avatar.id
-                  ? 'bg-violet-600 ring-2 ring-violet-400 ring-offset-2 ring-offset-slate-900'
+                  ? 'bg-violet-400 ring-2 ring-violet-400 ring-offset-2 ring-offset-slate-900'
                   : 'bg-slate-800/50 hover:bg-slate-700/50'
               )}
               title={avatar.label}
@@ -136,7 +136,7 @@ export function AvatarPicker({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex-1 py-3 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {saving ? (
             <>

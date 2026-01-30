@@ -39,7 +39,7 @@ export function CollectionSearchBar({
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className="w-full pl-11 pr-10 py-3 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors text-sm"
+        className="w-full pl-11 pr-10 py-3 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 transition-colors text-sm"
       />
       {value && (
         <button

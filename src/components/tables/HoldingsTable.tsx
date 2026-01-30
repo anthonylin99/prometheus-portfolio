@@ -176,7 +176,7 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
             placeholder="Search holdings..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 transition-colors"
           />
         </div>
 
@@ -195,7 +195,7 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                   "flex items-center justify-center min-w-0 overflow-hidden px-3",
                   "transition-colors duration-200",
                   isActive
-                    ? "bg-violet-600 text-white"
+                    ? "bg-violet-400 text-white"
                     : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                 )}
               >
@@ -266,7 +266,7 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                     <select
                       value={vsRange}
                       onChange={(e) => setVsRange(e.target.value as VsBenchmarkRange)}
-                      className="ml-1 py-0.5 px-1.5 rounded bg-slate-800 border border-slate-600 text-slate-300 text-xs focus:outline-none focus:border-violet-500"
+                      className="ml-1 py-0.5 px-1.5 rounded bg-slate-800 border border-slate-600 text-slate-300 text-xs focus:outline-none focus:border-violet-400"
                     >
                       <option value="1M">1M</option>
                       <option value="3M">3M</option>
@@ -380,7 +380,7 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                         {isAuthenticated && (
                           <button
                             onClick={() => setEditingHolding(holding)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-500/20 rounded-lg"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-400/20 rounded-lg"
                             title="Edit holding"
                           >
                             <Pencil className="w-4 h-4 text-slate-400 hover:text-violet-400" />
@@ -388,7 +388,7 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                         )}
                         <Link
                           href={`/holdings/${holding.ticker}`}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-500/20 rounded-lg inline-flex"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-400/20 rounded-lg inline-flex"
                         >
                           <ArrowUpRight className="w-4 h-4 text-violet-400" />
                         </Link>

@@ -177,7 +177,7 @@ export default function AssetDetailPage() {
     return (
       <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-3 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-12 h-12 border-3 border-violet-400 border-t-transparent rounded-full animate-spin" />
           <p className="text-slate-400">Loading asset data...</p>
         </div>
       </div>
@@ -210,7 +210,7 @@ export default function AssetDetailPage() {
           <>
             {/* Hero Section */}
             <div className="glass-card p-8 rounded-3xl mb-8 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-400/5 via-transparent to-transparent" />
               
               <div className="relative">
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
@@ -245,7 +245,7 @@ export default function AssetDetailPage() {
             {/* Add to Portfolio Section */}
             <div className="glass-card p-8 rounded-2xl mb-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-violet-400/20 flex items-center justify-center">
                   <Plus className="w-6 h-6 text-violet-400" />
                 </div>
                 <div className="flex-1">
@@ -290,13 +290,13 @@ export default function AssetDetailPage() {
               {!isAuthenticated ? (
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/50"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-400 to-violet-400 hover:from-violet-400 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-400/50"
                 >
                   Sign In to Add
                 </Link>
               ) : !showAddForm && !addSuccess ? (
                 <div className="space-y-4">
-                  <div className="p-4 rounded-lg bg-violet-500/10 border border-violet-500/20">
+                  <div className="p-4 rounded-lg bg-violet-400/10 border border-violet-400/20">
                     <p className="text-sm text-slate-300 mb-2">
                       <span className="font-semibold">Portfolio:</span> <span className="text-violet-400 font-bold">{portfolioName}</span>
                     </p>
@@ -308,7 +308,7 @@ export default function AssetDetailPage() {
                   </div>
                   <button
                     onClick={() => setShowAddForm(true)}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/50"
+                    className="w-full px-6 py-3 bg-gradient-to-r from-violet-400 to-violet-400 hover:from-violet-400 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-400/50"
                   >
                     {alreadyInPortfolio ? 'Add More Shares' : 'Add to Portfolio'}
                   </button>
@@ -316,7 +316,7 @@ export default function AssetDetailPage() {
               ) : !addSuccess ? (
                 <div className="space-y-4">
                   {/* Portfolio indicator - more prominent */}
-                  <div className="p-4 rounded-lg bg-violet-500/10 border-2 border-violet-500/30">
+                  <div className="p-4 rounded-lg bg-violet-400/10 border-2 border-violet-400/30">
                     <p className="text-xs text-slate-400 mb-1 uppercase tracking-wider">Adding to Portfolio</p>
                     <p className="text-lg font-bold text-white">
                       {portfolioName}
@@ -333,7 +333,7 @@ export default function AssetDetailPage() {
                         step="0.0001"
                         value={addFormData.shares}
                         onChange={(e) => setAddFormData({ ...addFormData, shares: parseFloat(e.target.value) || 0 })}
-                        className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white focus:outline-none focus:border-violet-500/50"
+                        className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white focus:outline-none focus:border-violet-400/50"
                       />
                     </div>
                     <div>
@@ -341,7 +341,7 @@ export default function AssetDetailPage() {
                       <select
                         value={addFormData.category}
                         onChange={(e) => setAddFormData({ ...addFormData, category: e.target.value as Category })}
-                        className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white focus:outline-none focus:border-violet-500/50"
+                        className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white focus:outline-none focus:border-violet-400/50"
                       >
                         {Object.keys(categoryColors).map(cat => (
                           <option key={cat} value={cat}>{cat}</option>
@@ -356,7 +356,7 @@ export default function AssetDetailPage() {
                         step="0.01"
                         value={addFormData.costBasis}
                         onChange={(e) => setAddFormData({ ...addFormData, costBasis: parseFloat(e.target.value) || 0 })}
-                        className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white focus:outline-none focus:border-violet-500/50"
+                        className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white focus:outline-none focus:border-violet-400/50"
                         placeholder="0.00"
                       />
                     </div>
@@ -365,7 +365,7 @@ export default function AssetDetailPage() {
                     <button
                       onClick={handleAddToPortfolio}
                       disabled={addingToPortfolio || addFormData.shares <= 0}
-                      className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 py-3 bg-gradient-to-r from-violet-400 to-violet-400 hover:from-violet-400 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-400/50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {addingToPortfolio ? (
                         <>
@@ -454,7 +454,7 @@ export default function AssetDetailPage() {
             <p className="text-slate-400 mb-4">Asset &quot;{ticker}&quot; not found</p>
             <Link 
               href="/holdings"
-              className="px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors inline-block"
+              className="px-4 py-2 bg-violet-400 text-white rounded-lg hover:bg-violet-400 transition-colors inline-block"
             >
               Back to Holdings
             </Link>
@@ -481,7 +481,7 @@ export default function AssetDetailPage() {
 
       {/* Hero Section */}
       <div className="glass-card p-8 rounded-3xl mb-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-400/5 via-transparent to-transparent" />
         
         <div className="relative">
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">

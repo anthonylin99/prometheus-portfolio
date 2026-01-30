@@ -49,7 +49,7 @@ export function InviteCard({ inviteCode, circleName }: InviteCardProps) {
         </div>
         <button
           onClick={handleCopy}
-          className="px-4 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition-colors flex items-center gap-2"
+          className="px-4 py-3 bg-violet-400 hover:bg-violet-400 text-white rounded-xl transition-colors flex items-center gap-2"
         >
           {copied ? (
             <Check className="w-4 h-4" />

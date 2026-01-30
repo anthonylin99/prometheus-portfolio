@@ -21,7 +21,7 @@ export function ETFCard({ etf, className }: ETFCardProps) {
     <Link 
       href="/etf"
       className={cn(
-        "glass-card p-5 rounded-2xl group hover:border-violet-500/40 transition-all block",
+        "glass-card p-5 rounded-2xl group hover:border-violet-400/40 transition-all block",
         className
       )}
     >

@@ -97,7 +97,7 @@ export default function CollectionDetailPage() {
           <p className="text-slate-400 mb-4">Collection not found</p>
           <Link
             href="/explore"
-            className="px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors inline-block"
+            className="px-4 py-2 bg-violet-400 text-white rounded-lg hover:bg-violet-400 transition-colors inline-block"
           >
             Back to Explore
           </Link>
@@ -121,7 +121,7 @@ export default function CollectionDetailPage() {
 
       {/* Hero */}
       <div className="glass-card p-8 rounded-3xl mb-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-400/5 via-transparent to-transparent" />
         <div className="relative">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-3xl">{getCategoryEmoji(category.icon)}</span>

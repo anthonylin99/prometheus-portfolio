@@ -82,7 +82,7 @@ export function PortfolioSwitcher() {
         onClick={() => setOpen(!open)}
         className={cn(
           "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
-          "bg-slate-800/60 border border-slate-700/40 hover:border-violet-500/40",
+          "bg-slate-800/60 border border-slate-700/40 hover:border-violet-400/40",
           viewing ? "text-violet-300" : "text-slate-300"
         )}
       >
@@ -116,7 +116,7 @@ export function PortfolioSwitcher() {
             }}
             className={cn(
               "w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-700/40 transition-colors text-left",
-              !viewing && "bg-violet-500/10"
+              !viewing && "bg-violet-400/10"
             )}
           >
             <span
@@ -164,7 +164,7 @@ export function PortfolioSwitcher() {
                       }}
                       className={cn(
                         "w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-700/40 transition-colors text-left",
-                        isActive && "bg-violet-500/10"
+                        isActive && "bg-violet-400/10"
                       )}
                     >
                       <span

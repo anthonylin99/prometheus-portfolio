@@ -84,7 +84,7 @@ export function JoinCircleStep({ data, onChange }: JoinCircleStepProps) {
             className={cn(
               'w-full flex items-center gap-4 p-5 rounded-xl border transition-all duration-200 text-left',
               data.action === 'join'
-                ? 'bg-violet-500/10 border-violet-500/40 ring-1 ring-violet-500/20'
+                ? 'bg-violet-400/10 border-violet-400/40 ring-1 ring-violet-400/20'
                 : 'bg-slate-800/30 border-slate-700/30 hover:border-slate-600/50'
             )}
           >
@@ -92,7 +92,7 @@ export function JoinCircleStep({ data, onChange }: JoinCircleStepProps) {
               className={cn(
                 'w-12 h-12 rounded-xl flex items-center justify-center',
                 data.action === 'join'
-                  ? 'bg-violet-600 text-white'
+                  ? 'bg-violet-400 text-white'
                   : 'bg-slate-800 text-slate-400'
               )}
             >
@@ -139,7 +139,7 @@ export function JoinCircleStep({ data, onChange }: JoinCircleStepProps) {
             className={cn(
               'w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 text-left',
               data.action === 'join'
-                ? 'bg-violet-500/10 border-violet-500/40 ring-1 ring-violet-500/20'
+                ? 'bg-violet-400/10 border-violet-400/40 ring-1 ring-violet-400/20'
                 : 'bg-slate-800/30 border-slate-700/30 hover:border-slate-600/50'
             )}
           >
@@ -147,7 +147,7 @@ export function JoinCircleStep({ data, onChange }: JoinCircleStepProps) {
               className={cn(
                 'w-10 h-10 rounded-lg flex items-center justify-center',
                 data.action === 'join'
-                  ? 'bg-violet-600 text-white'
+                  ? 'bg-violet-400 text-white'
                   : 'bg-slate-800 text-slate-400'
               )}
             >
@@ -196,7 +196,7 @@ export function JoinCircleStep({ data, onChange }: JoinCircleStepProps) {
                 }
                 placeholder="e.g., A1B2C3D4"
                 maxLength={8}
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/25 transition-colors uppercase tracking-widest font-mono text-center text-lg"
+                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 focus:ring-1 focus:ring-violet-400/25 transition-colors uppercase tracking-widest font-mono text-center text-lg"
               />
             </div>
           )}

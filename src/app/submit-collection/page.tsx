@@ -81,7 +81,7 @@ export default function SubmitCollectionPage() {
           <div className="flex gap-3 justify-center">
             <Link
               href="/explore"
-              className="px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors"
+              className="px-4 py-2 bg-violet-400 text-white rounded-lg hover:bg-violet-400 transition-colors"
             >
               Back to Explore
             </Link>
@@ -115,7 +115,7 @@ export default function SubmitCollectionPage() {
 
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-violet-400/20 flex items-center justify-center">
           <Send className="w-5 h-5 text-violet-400" />
         </div>
         <div>
@@ -140,7 +140,7 @@ export default function SubmitCollectionPage() {
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Quantum Computing Leaders"
               maxLength={100}
-              className="w-full px-3 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+              className="w-full px-3 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 transition-colors"
             />
           </div>
 
@@ -155,7 +155,7 @@ export default function SubmitCollectionPage() {
               placeholder="Describe the investment theme and why these stocks belong together..."
               maxLength={500}
               rows={3}
-              className="w-full px-3 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors resize-none"
+              className="w-full px-3 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 transition-colors resize-none"
             />
             <p className="text-xs text-slate-500 mt-1">{description.length}/500</p>
           </div>
@@ -200,12 +200,12 @@ export default function SubmitCollectionPage() {
                 onChange={(e) => setTickerInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addTicker()}
                 placeholder="Add ticker (e.g. NVDA)"
-                className="flex-1 px-3 py-2 rounded-lg bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 text-sm"
+                className="flex-1 px-3 py-2 rounded-lg bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 text-sm"
               />
               <button
                 onClick={addTicker}
                 disabled={tickers.length >= 15}
-                className="flex items-center gap-1 px-3 py-2 rounded-lg bg-violet-600 text-white hover:bg-violet-500 transition-colors text-sm disabled:opacity-50"
+                className="flex items-center gap-1 px-3 py-2 rounded-lg bg-violet-400 text-white hover:bg-violet-400 transition-colors text-sm disabled:opacity-50"
               >
                 <Plus className="w-4 h-4" />
                 Add
@@ -246,7 +246,7 @@ export default function SubmitCollectionPage() {
               'w-full py-3 rounded-xl font-semibold text-white transition-colors',
               submitting
                 ? 'bg-slate-700 cursor-not-allowed'
-                : 'bg-violet-600 hover:bg-violet-500'
+                : 'bg-violet-400 hover:bg-violet-400'
             )}
           >
             {submitting ? 'Submitting...' : 'Submit Collection'}

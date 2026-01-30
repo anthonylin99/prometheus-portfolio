@@ -32,7 +32,7 @@ export function LeaderboardRow({ member, isCurrentUser }: LeaderboardRowProps) {
       className={cn(
         'flex items-center gap-4 p-4 rounded-xl transition-colors',
         isCurrentUser
-          ? 'bg-violet-500/10 border border-violet-500/20'
+          ? 'bg-violet-400/10 border border-violet-400/20'
           : 'bg-slate-800/20 border border-slate-700/20 hover:bg-slate-800/40'
       )}
     >

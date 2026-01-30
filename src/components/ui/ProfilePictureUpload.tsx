@@ -96,12 +96,12 @@ export function ProfilePictureUpload({
             src={currentImage}
             alt="Profile"
             fill
-            className="rounded-full object-cover border-2 border-violet-500/30"
+            className="rounded-full object-cover border-2 border-violet-400/30"
           />
         ) : (
           <div
             className={cn(
-              'rounded-full flex items-center justify-center text-white font-bold border-2 border-violet-500/30',
+              'rounded-full flex items-center justify-center text-white font-bold border-2 border-violet-400/30',
               sizeClasses[size],
               size === 'sm' && 'text-xs',
               size === 'md' && 'text-lg',
@@ -146,12 +146,12 @@ export function ProfilePictureUpload({
                     src={currentImage}
                     alt="Current"
                     fill
-                    className="rounded-full object-cover border-2 border-violet-500/30"
+                    className="rounded-full object-cover border-2 border-violet-400/30"
                   />
                 </div>
               ) : (
                 <div
-                  className="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold text-2xl border-2 border-violet-500/30"
+                  className="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold text-2xl border-2 border-violet-400/30"
                   style={{ backgroundColor: fallbackColor }}
                 >
                   {fallbackInitial.charAt(0).toUpperCase()}
@@ -172,7 +172,7 @@ export function ProfilePictureUpload({
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />

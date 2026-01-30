@@ -1,14 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import { SMAData } from '@/types/sma';
 import { cn } from '@/lib/utils';
+import { Plus, Eye, Loader2, Check } from 'lucide-react';
 
 interface DispersionChartProps {
   data: SMAData[];
   maxDeviation?: number; // For scaling, auto-calculated if not provided
+  onAddToPortfolio?: (ticker: string) => Promise<void>;
+  onAddToWatchlist?: (ticker: string) => Promise<void>;
 }
 
-export function DispersionChart({ data, maxDeviation }: DispersionChartProps) {
+export function DispersionChart({ data, maxDeviation, onAddToPortfolio, onAddToWatchlist }: DispersionChartProps) {
   if (data.length === 0) {
     return (
       <div className="text-center text-slate-400 py-12">
@@ -29,6 +33,8 @@ export function DispersionChart({ data, maxDeviation }: DispersionChartProps) {
           key={item.ticker}
           item={item}
           maxDeviation={max}
+          onAddToPortfolio={onAddToPortfolio}
+          onAddToWatchlist={onAddToWatchlist}
         />
       ))}
     </div>
@@ -38,12 +44,47 @@ export function DispersionChart({ data, maxDeviation }: DispersionChartProps) {
 interface DispersionBarProps {
   item: SMAData;
   maxDeviation: number;
+  onAddToPortfolio?: (ticker: string) => Promise<void>;
+  onAddToWatchlist?: (ticker: string) => Promise<void>;
 }
 
-function DispersionBar({ item, maxDeviation }: DispersionBarProps) {
+type ActionState = 'idle' | 'loading' | 'success';
+
+function DispersionBar({ item, maxDeviation, onAddToPortfolio, onAddToWatchlist }: DispersionBarProps) {
+  const [portfolioState, setPortfolioState] = useState<ActionState>('idle');
+  const [watchlistState, setWatchlistState] = useState<ActionState>('idle');
+
   const isNegative = item.deviation < 0;
   const absDeviation = Math.abs(item.deviation);
   const barWidth = Math.min((absDeviation / maxDeviation) * 100, 100);
+
+  const handleAddToPortfolio = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onAddToPortfolio || portfolioState !== 'idle') return;
+
+    setPortfolioState('loading');
+    try {
+      await onAddToPortfolio(item.ticker);
+      setPortfolioState('success');
+      setTimeout(() => setPortfolioState('idle'), 2000);
+    } catch {
+      setPortfolioState('idle');
+    }
+  };
+
+  const handleAddToWatchlist = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onAddToWatchlist || watchlistState !== 'idle') return;
+
+    setWatchlistState('loading');
+    try {
+      await onAddToWatchlist(item.ticker);
+      setWatchlistState('success');
+      setTimeout(() => setWatchlistState('idle'), 2000);
+    } catch {
+      setWatchlistState('idle');
+    }
+  };
 
   return (
     <div className="flex items-center gap-3 group hover:bg-slate-800/30 rounded-lg p-2 -mx-2 transition-colors">
@@ -93,6 +134,54 @@ function DispersionBar({ item, maxDeviation }: DispersionBarProps) {
       <div className="w-32 text-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 hidden sm:block">
         ${item.currentPrice.toFixed(2)} / ${item.sma.toFixed(2)}
       </div>
+
+      {/* Quick-Add Buttons */}
+      {(onAddToPortfolio || onAddToWatchlist) && (
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+          {onAddToPortfolio && (
+            <button
+              onClick={handleAddToPortfolio}
+              disabled={portfolioState !== 'idle'}
+              className={cn(
+                'p-1.5 rounded-md text-xs font-medium transition-all',
+                portfolioState === 'success'
+                  ? 'bg-emerald-500/20 text-emerald-400'
+                  : 'bg-violet-400/20 text-violet-400 hover:bg-violet-400/30'
+              )}
+              title="Add to Portfolio"
+            >
+              {portfolioState === 'loading' ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : portfolioState === 'success' ? (
+                <Check className="w-3.5 h-3.5" />
+              ) : (
+                <Plus className="w-3.5 h-3.5" />
+              )}
+            </button>
+          )}
+          {onAddToWatchlist && (
+            <button
+              onClick={handleAddToWatchlist}
+              disabled={watchlistState !== 'idle'}
+              className={cn(
+                'p-1.5 rounded-md text-xs font-medium transition-all',
+                watchlistState === 'success'
+                  ? 'bg-emerald-500/20 text-emerald-400'
+                  : 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30'
+              )}
+              title="Add to Watchlist"
+            >
+              {watchlistState === 'loading' ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : watchlistState === 'success' ? (
+                <Check className="w-3.5 h-3.5" />
+              ) : (
+                <Eye className="w-3.5 h-3.5" />
+              )}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

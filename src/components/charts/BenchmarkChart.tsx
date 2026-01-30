@@ -146,7 +146,7 @@ export function BenchmarkChart({ range, className }: BenchmarkChartProps) {
       <div className={cn("glass-card p-6 rounded-2xl", className)}>
         <div className="h-[400px] flex items-center justify-center">
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
             <span className="text-slate-400">Loading benchmark data...</span>
           </div>
         </div>

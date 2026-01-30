@@ -29,7 +29,7 @@ export function SocialFeed({ ticker, className }: SocialFeedProps) {
           className={cn(
             "flex-1 px-4 py-3 text-sm font-medium transition flex items-center justify-center gap-2",
             activeTab === 'news'
-              ? "text-white bg-slate-800/50 border-b-2 border-violet-500"
+              ? "text-white bg-slate-800/50 border-b-2 border-violet-400"
               : "text-gray-400 hover:text-white"
           )}
         >
@@ -41,7 +41,7 @@ export function SocialFeed({ ticker, className }: SocialFeedProps) {
           className={cn(
             "flex-1 px-4 py-3 text-sm font-medium transition flex items-center justify-center gap-2",
             activeTab === 'stocktwits'
-              ? "text-white bg-slate-800/50 border-b-2 border-violet-500"
+              ? "text-white bg-slate-800/50 border-b-2 border-violet-400"
               : "text-gray-400 hover:text-white"
           )}
         >
@@ -163,7 +163,7 @@ function StockTwitsFeed({ messages, isLoading }: StockTwitsFeedProps) {
               <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <span className="font-medium text-white">{msg.user.name}</span>
                 {msg.user.official && (
-                  <span className="px-1.5 py-0.5 bg-violet-500/20 text-violet-400 text-xs rounded">Official</span>
+                  <span className="px-1.5 py-0.5 bg-violet-400/20 text-violet-400 text-xs rounded">Official</span>
                 )}
                 <span className="text-gray-500 text-sm">@{msg.user.username}</span>
               </div>
@@ -194,7 +194,7 @@ function LoadingState() {
   return (
     <div className="flex items-center justify-center h-full">
       <div className="flex items-center gap-3">
-        <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
         <span className="text-slate-400 text-sm">Loading...</span>
       </div>
     </div>
